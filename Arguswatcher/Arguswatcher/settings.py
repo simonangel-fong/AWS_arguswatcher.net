@@ -9,7 +9,8 @@ SECRET_KEY = 'django-insecure-nx7(i0i-q3$)t3m@7kzp@$yzlh+srcxw*pcz5ht5tj+bs##1*9
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = True
 
-ALLOWED_HOSTS = []
+# A list of strings representing the host/domain names that this Django site can serve.
+ALLOWED_HOSTS = ['*']       # allow any
 
 
 # Application definition

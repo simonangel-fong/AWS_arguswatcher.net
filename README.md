@@ -29,7 +29,9 @@ A Django-based blog platform showcasing web development proficiency. Users can s
 
 ## AWS Architecture Diagram
 
-![diagram](./pic/diagram/arguswatcher_v0.1.png)
+- Using [draw.io](https://draw.io/)
+
+![diagram](./doc/v0.1/diagram/arguswatcher_v0.1.png)
 
 ---
 
