@@ -453,6 +453,17 @@ sudo service codedeploy-agent status
 ### Test
 
 - Commit and push
+- View in CodeDeploy
+
+![codepipeline07](./pic/codepipeline07.png)
+
+- View in public IP
+
+![codepipeline08](./pic/codepipeline08.png)
+
+- edite home page local
+- commit and push
+- View in browser
 
 ---
 
