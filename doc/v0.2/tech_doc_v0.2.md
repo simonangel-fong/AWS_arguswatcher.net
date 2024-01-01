@@ -10,6 +10,7 @@
   - [Create profile page](#create-profile-page)
   - [Create log out page](#create-log-out-page)
   - [Test locally and push](#test-locally-and-push)
+- [Side Lab: using user data for EC2 provision](#side-lab-using-user-data-for-ec2-provision)
 - [CI/CD](#cicd)
 - [Database](#database)
 - [Summary](#summary)
@@ -227,12 +228,34 @@ path("logout/", LogoutView.as_view(   # using Django LogoutView
 
 ### Test locally and push
 
-- Test
+- Test locally
+
+- Collect static
+
+  - `py Arguswatcher/manage.py collectstatic`
+
+- Migarte
+
+  - `py Arguswatcher/manage.py makemigrations`
+  - `py Arguswatcher/manage.py migrate`
+
+- Collect info of dependencies
+
+  - `pip freeze > requirements.txt`
 
 - push to Github
   - `git add -A`
   - `git commit -m "Implement user authentication features (startapp AppAccount for login, profile, logout)"`
   - `git tag -a v0.2.0.1 -m "version 0.2 development 1"`
+  - `git log --oneline -4`
+  - `git push`
+
+---
+
+## Side Lab: using user data for EC2 provision
+
+- Create a new EC2 instance
+  - define user data with bash script deploy_django_ubuntu.sh of V0.1
 
 ---
 
