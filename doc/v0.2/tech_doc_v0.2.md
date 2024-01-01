@@ -4,6 +4,7 @@
 
 - [ArgusWatcher - Document v0.2](#arguswatcher---document-v02)
 - [Requirements](#requirements)
+  - [Analysis of last version](#analysis-of-last-version)
 - [Application Development](#application-development)
   - [Create app "AppAccount"](#create-app-appaccount)
   - [Create Login Page](#create-login-page)
@@ -12,12 +13,29 @@
   - [Test locally and push](#test-locally-and-push)
 - [Side Lab: using user data for EC2 provision](#side-lab-using-user-data-for-ec2-provision)
 - [CI/CD](#cicd)
+  - [Create Roles](#create-roles)
+  - [Create an EC2 instance](#create-an-ec2-instance)
+  - [Configure CodeDeploy](#configure-codedeploy)
+  - [Create a CodeBuild](#create-a-codebuild)
+  - [Create an application for CodeDeploy](#create-an-application-for-codedeploy)
+  - [Create a deployment group for CodeDeploy](#create-a-deployment-group-for-codedeploy)
+  - [Create a new CodePipeline](#create-a-new-codepipeline)
+  - [Test](#test)
 - [Database](#database)
 - [Summary](#summary)
 
 ---
 
 ## Requirements
+
+### Analysis of last version
+
+| Problems                  | Solution             |
+| ------------------------- | -------------------- |
+| Time-consuming deployment | 1. Use data; 2. CICD |
+| Use of sqlite3            | AWS RDS              |
+
+---
 
 - **Django Project:**
 
@@ -245,9 +263,9 @@ path("logout/", LogoutView.as_view(   # using Django LogoutView
 
 - push to Github
   - `git add -A`
+  - `git log --oneline -4`
   - `git commit -m "Implement user authentication features (startapp AppAccount for login, profile, logout)"`
   - `git tag -a v0.2.0.1 -m "version 0.2 development 1"`
-  - `git log --oneline -4`
   - `git push`
 
 ---
@@ -257,9 +275,184 @@ path("logout/", LogoutView.as_view(   # using Django LogoutView
 - Create a new EC2 instance
   - define user data with bash script deploy_django_ubuntu.sh of V0.1
 
+![use_data](./pic/use_data.png)
+
+- Test
+
+![use_data_test](./pic/use_data_test.png)
+
+- Delete EC2 instance
+
 ---
 
 ## CI/CD
+
+- `CI/CD`
+
+  - `Continuous Integration and Continuous Deployment/Delivery`
+  - the automation of the software development life cycle from dvelopment to production.
+  - Steps:
+    - Code
+    - Build
+    - Test
+    - Deploy
+  - Benefits:
+    - Fast code deliery
+    - No manaual deployment
+    - Minimum errors
+    - Cost reduction.
+  - Common tools:
+    - `GitHub Actions`:automate workflows directly from your GitHub repository.
+    - `AWS CodePipeline`: automates the build, test, and deployment phases.
+
+---
+
+### Create Roles
+
+- Create role that allows EC2 instance to call CodeDeploy
+
+![cicd01](./pic/cicd01.png)
+
+![cicd02](./pic/cicd02.png)
+
+![cicd03](./pic/cicd03.png)
+
+![cicd04](./pic/cicd04.png)
+
+![cicd05](./pic/cicd05.png)
+
+- Create role that allows CodeDeploy to call AWS services
+
+![cicd06](./pic/cicd06.png)
+
+![cicd07](./pic/cicd07.png)
+
+![cicd08](./pic/cicd08.png)
+
+![cicd09](./pic/cicd09.png)
+
+---
+
+### Create an EC2 instance
+
+- OS: Ubuntu
+- VPC: arguswatcherVPC
+- Enable Key pair
+- SG: SSH + HTTP
+- Tags:
+  - Name:arguswatcherServer
+  - project:arguswatcher
+
+![cicd10](./pic/cicd10.png)
+
+- Update the IAM Role
+
+![cicd11](./pic/cicd11.png)
+
+- Reboot
+
+![cicd12](./pic/cicd12.png)
+
+---
+
+### Configure CodeDeploy
+
+- Access instance using SSH
+
+```sh
+sudo apt update
+sudo apt install -y ruby-full     # install ruby-full package
+sudo apt install -y wget          # install wget utility
+```
+
+- Install CodeDeploy files on EC2
+
+  - Many of the files CodeDeploy relies on are stored in publicly available, AWS region-specific Amazon S3 buckets.
+    - These files include installation files for the CodeDeploy agent, templates, and sample application files. We call this collection of files the CodeDeploy Resource Kit.
+  - rel:
+
+    - https://docs.aws.amazon.com/codedeploy/latest/userguide/resource-kit.html
+
+  - for us-east-1
+    - https://aws-codedeploy-us-east-1.s3.amazonaws.com/latest/install
+
+```sh
+# download codedeploy on the EC2
+wget https://aws-codedeploy-us-east-1.s3.amazonaws.com/latest/install
+# change permission of the install file
+sudo chmod +x ./install
+# install and log the output to the tmp/logfile.file
+sudo ./install auto  > /tmp/logfile
+# check whether the CodeDeploy is running
+sudo service codedeploy-agent status
+```
+
+![cicd13](./pic/cicd13.png)
+
+![cicd14](./pic/cicd14.png)
+
+---
+
+### Create a CodeBuild
+
+![codebuild01](./pic/codebuild01.png)
+
+- Choose Github as source
+
+![codebuild02](./pic/codebuild02.png)
+
+![codebuild03](./pic/codebuild03.png)
+
+![codebuild04](./pic/codebuild04.png)
+
+![codebuild05](./pic/codebuild05.png)
+
+![codebuild06](./pic/codebuild06.png)
+
+---
+
+### Create an application for CodeDeploy
+
+![codedeloyapp01](./pic/codedeloyapp01.png)
+
+### Create a deployment group for CodeDeploy
+
+![codedeloydpgroup01](./pic/codedeloydpgroup01.png)
+
+![codedeloydpgroup02](./pic/codedeloydpgroup02.png)
+
+- Select the correct tag held by the target EC2 instance.
+
+![codedeloydpgroup03](./pic/codedeloydpgroup03.png)
+
+![codedeloydpgroup04](./pic/codedeloydpgroup04.png)
+
+- At this stage disable load balancer.
+  - It can enbale later when CICD work well.
+
+![codedeloydpgroup05](./pic/codedeloydpgroup05.png)
+
+---
+
+### Create a new CodePipeline
+
+![codepipeline01](./pic/codepipeline01.png)
+
+![codepipeline02](./pic/codepipeline02.png)
+
+![codepipeline03](./pic/codepipeline03.png)
+
+![codepipeline04](./pic/codepipeline04.png)
+
+![codepipeline05](./pic/codepipeline05.png)
+
+![codepipeline06](./pic/codepipeline06.png)
+
+---
+
+### Test
+
+- Commit and push
 
 ---
 

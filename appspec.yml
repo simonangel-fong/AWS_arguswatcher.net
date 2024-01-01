@@ -1,0 +1,35 @@
+version: 0.0
+
+os: linux
+files:
+  # The source instruction identifies a file or directory from your revision to copy to the instance
+  # "/": all of the files from your revision are copied to the instance.
+  - source: /
+    # # The destination instruction identifies the location on the instance where the files should be copied.
+    destination: /home/ubuntu/AWS_arguswatcher_net
+# specifies how special permissions
+permissions:
+  # a set of file system objects (files or directories/folders) that the specified permissions are applied to after the file system objects are copied to the instance.
+  - object: /home/ubuntu/AWS_arguswatcher_net
+    #  The name of the owner of object.
+    owner: ubuntu
+    # The name of the group for object.
+    group: ubuntu
+# An EC2/On-Premises deployment hook is executed once per deployment to an instance.
+hooks:
+  # During the BeforeInstall deployment lifecycle event, run the commands in the script specified in "location".
+  BeforeInstall:
+    # Required. The location in the bundle of the script file for the revision.
+    - location: CodeDeploy/beforeInstall.sh
+      # Optional. The number of seconds to allow the script to execute before it is considered to have failed.
+      timeout: 600 # 10 min
+      # Optional. The user to impersonate when running the script.
+      runas: ubuntu
+  AfterInstall:
+    - location: CodeDeploy/afterInstall.sh
+      timeout: 600
+      runas: ubuntu
+  ApplicationStart:
+    - location: CodeDeploy/applicationStart.sh
+      timeout: 600
+      runas: ubuntu
