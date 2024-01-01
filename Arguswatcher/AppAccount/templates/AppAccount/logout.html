@@ -1,0 +1,9 @@
+{% extends "layout/base.html" %} {% block main %}
+<header class="pt-4">
+  <h1 class="heading text-center">{{heading}}</h1>
+  <hr />
+</header>
+<div class="row">
+  <a href="{% url 'home' %}"> Back to Home page. </a>
+</div>
+{% endblock %} {% block js %} {% endblock %}

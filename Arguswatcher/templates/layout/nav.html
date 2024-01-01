@@ -54,7 +54,9 @@
 
       <!-- Sign in button -->
       {% if not user.is_authenticated %}
-      <a class="btn btn-sm btn-warning" href="#">Login</a>
+      <a class="btn btn-sm btn-warning" href="{% url 'AppAccount:login' %}">
+        Login
+      </a>
       {% else %}
       <ul class="navbar-nav mb-2 mb-lg-0">
         <li class="nav-item dropstart">
@@ -74,7 +76,9 @@
             </li>
             <li><hr class="dropdown-divider" /></li>
             <li>
-              <a class="dropdown-item" href="#">Logout</a>
+              <a class="dropdown-item" href="{% url 'AppAccount:logout' %}">
+                Logout
+              </a>
             </li>
           </ul>
         </li>

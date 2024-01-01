@@ -1,0 +1,43 @@
+{% extends "layout/base.html" %} {% block main %} {% load static %}
+<header class="pt-5">
+  <h1 class="heading text-center">{{heading}}</h1>
+  <hr />
+</header>
+
+<div class="row m-3">
+  <div class="col-md-8 col-sm-0">
+    <img
+      src="{% static 'img/home.png' %}"
+      class="d-block mx-lg-auto img-fluid"
+      alt="Bootstrap Themes"
+      width="700"
+      height="500"
+      loading="lazy"
+    />
+  </div>
+  <div class="col-md-4 col-sm-12 pt-4">
+    {% if form.errors %} {% endif %} {% load django_bootstrap5 %}
+    <form method="post">
+      {% csrf_token %} {% bootstrap_form form %}
+      <div class="row py-3">
+        <button class="btn btn-primary w-100 py-2 my-1" type="submit">
+          Login
+        </button>
+        <a
+          class="btn btn-outline-secondary w-100 p-2 my-1"
+          href="{% url 'home' %}"
+          >Cancel</a
+        >
+        <input type="hidden" name="next" value="{{ next }}" />
+      </div>
+    </form>
+
+    <hr />
+    <p class="text-body-secondary pb-3">
+      Do not have an account?
+      <a class="text-body-secondary" href="#">Signup</a>
+    </p>
+  </div>
+</div>
+
+{% endblock %} {% block js %} {% endblock %}
