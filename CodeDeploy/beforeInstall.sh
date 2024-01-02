@@ -8,4 +8,6 @@
 # Script for application start, including removal of existing folde
 
 sudo rm -rf /home/ubuntu/AWS_arguswatcher_net/*
-echo -e "$(date +'%Y-%m-%d %R') remove existing folder" >>~/log
+sudo rm -r /home/ubuntu/log
+touch /home/ubuntu/log
+sudo echo -e "$(date +'%Y-%m-%d %R') remove existing folder" >>~/log
