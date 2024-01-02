@@ -539,6 +539,7 @@ sudo ./install auto >/tmp/logfile &&
 
 - Create an EC2 instance using template to install CodeDeploy
   - test CodeDeploy
+  - attach IAM role, otherwise deployment will time out.
 
 ```sh
 # check whether the CodeDeploy is running
