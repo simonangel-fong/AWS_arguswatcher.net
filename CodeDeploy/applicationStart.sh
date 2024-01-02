@@ -14,7 +14,7 @@ P_GITHUB_REPO_NAME=AWS_arguswatcher_net # github repo name
 P_PROJECT_NAME=Arguswatcher             # the name of django project name
 
 P_HOME=/home/ubuntu                             # path of home dir
-P_LOG=${P_HOME}/log                             # log file
+P_LOG=${P_HOME}/deploy_log                      # log file
 P_VENV_PATH=${P_HOME}/env                       # path of venv
 P_REPO_PATH=${P_HOME}/${P_GITHUB_REPO_NAME}     # path of repo
 P_PROJECT_PATH=${P_REPO_PATH}/${P_PROJECT_NAME} # path of project, where the manage.py locates.
@@ -22,6 +22,8 @@ P_PROJECT_PATH=${P_REPO_PATH}/${P_PROJECT_NAME} # path of project, where the man
 log() {
     sudo echo -e "$(date +'%Y-%m-%d %R'): ${1}" >>$P_LOG
 }
+
+touch $P_LOG
 
 ###########################################################
 ## Django migrations

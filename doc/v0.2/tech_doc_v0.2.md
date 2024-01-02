@@ -728,6 +728,7 @@ DATABASES = {
   - source template: arguswatcherTemplate
   - add Profile: CodeDeploy role
   - user data
+  - set default version
 
 ```sh
 P_HOME=/home/ubuntu # path of home dir

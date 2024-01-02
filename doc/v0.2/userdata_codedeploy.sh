@@ -3,7 +3,7 @@
 # Program Name: userdata_codedeploy.sh
 # Author name: Wenhao Fang
 # Date Created: Jan 1st 2024
-# Date updated: Jan 1st 2024
+# Date updated: Jan 2nd 2024
 # Description of the script:
 #   Script for user data, including installation of codedeploy.
 
@@ -11,7 +11,7 @@
 ## Arguments
 ###########################################################
 P_HOME=/home/ubuntu # path of home dir
-P_LOG=${P_HOME}/log # log file
+P_LOG=${P_HOME}/userdata_log # log file
 
 log() {
     echo -e "$(date +'%Y-%m-%d %R'): ${1}" >>$P_LOG

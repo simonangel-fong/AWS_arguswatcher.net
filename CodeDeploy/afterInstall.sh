@@ -3,7 +3,7 @@
 # Program Name: beforeInstall.sh
 # Author name: Wenhao Fang
 # Date Created: Jan 1st 2024
-# Date updated: Jan 1st 2024
+# Date updated: Jan 2nd 2024
 # Description of the script:
 #   Script for afterinstall, including packages installation.
 
@@ -16,7 +16,7 @@ P_HOST_IP=$(dig +short myip.opendns.com @resolver1.opendns.com) # public IP, cal
 P_DOMAIN="arguswatcher.net"
 
 P_HOME=/home/ubuntu                             # path of home dir
-P_LOG=${P_HOME}/log                             # log file
+P_LOG=${P_HOME}/deploy_log                      # log file
 P_VENV_PATH=${P_HOME}/env                       # path of venv
 P_REPO_PATH=${P_HOME}/${P_GITHUB_REPO_NAME}     # path of repo
 P_PROJECT_PATH=${P_REPO_PATH}/${P_PROJECT_NAME} # path of project, where the manage.py locates.
@@ -24,6 +24,8 @@ P_PROJECT_PATH=${P_REPO_PATH}/${P_PROJECT_NAME} # path of project, where the man
 log() {
     sudo echo -e "$(date +'%Y-%m-%d %R'): ${1}" >>$P_LOG
 }
+
+touch $P_LOG
 
 ###########################################################
 ## Establish virtual environment
