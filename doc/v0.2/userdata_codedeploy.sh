@@ -10,7 +10,7 @@
 ###########################################################
 ## Arguments
 ###########################################################
-P_HOME=/home/ubuntu # path of home dir
+P_HOME=/home/ubuntu          # path of home dir
 P_LOG=${P_HOME}/userdata_log # log file
 
 log() {

@@ -22,14 +22,14 @@ hooks:
     # Required. The location in the bundle of the script file for the revision.
     - location: CodeDeploy/beforeInstall.sh
       # Optional. The number of seconds to allow the script to execute before it is considered to have failed.
-      timeout: 600 # 10 min
+      timeout: 300 # 5 min
       # Optional. The user to impersonate when running the script.
       runas: ubuntu
   AfterInstall:
     - location: CodeDeploy/afterInstall.sh
-      timeout: 600
+      timeout: 300
       runas: ubuntu
   ApplicationStart:
     - location: CodeDeploy/applicationStart.sh
-      timeout: 600
+      timeout: 300
       runas: ubuntu
