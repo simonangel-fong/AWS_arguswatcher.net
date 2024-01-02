@@ -27,6 +27,7 @@
   - [Django connect to local MySQL](#django-connect-to-local-mysql)
   - [`django-eviron`](#django-eviron)
   - [Create AWS RDS MySQL](#create-aws-rds-mysql)
+  - [Access to RDS instance within EC2 Instance](#access-to-rds-instance-within-ec2-instance)
   - [Configure Deployment](#configure-deployment)
 - [Summary](#summary)
   - [Challenge and Lesson](#challenge-and-lesson)
@@ -688,23 +689,44 @@ DATABASES = {
 
 ### Create AWS RDS MySQL
 
-- skip, using the existing database;
+![rds03](./pic/rds03.png)
+
+![rds04](./pic/rds04.png)
+
+![rds05](./pic/rds05.png)
+
+![rds06](./pic/rds06.png)
+
+![rds07](./pic/rds07.png)
+
+![rds08](./pic/rds08.png)
+
+![rds09](./pic/rds09.png)
+
+![rds10](./pic/rds10.png)
 
 ---
 
-- Test Connection with RDS using local terminal
+### Access to RDS instance within EC2 Instance
 
-![rds01](./pic/rds01.png)
+- Install MySQL client
 
-- Create database for the current project.
-- Modified the database connection value in the env file
-- Django makemigrations and migrate
-- Create a superuser for RDS
-- run django app locally connecting with RDS.
-  - local ip
-  - rds user
+```sh
+sudo apt update
+sudo apt install -y mysql-client
+```
 
-![rds02](./pic/rds02.png)
+![rds11](./pic/rds11.png)
+
+![rds12](./pic/rds12.png)
+
+- Connection with RDS within EC2 instance
+
+![rds13](./pic/rds13.png)
+
+- Create database for the project
+
+![rds14](./pic/rds14.png)
 
 ---
 
@@ -757,18 +779,38 @@ ENV_FILE" &&
 - commit and push
 - Test
 
+![deploy03](./pic/deploy01.png)
+
+- Update Target Group
+  - Register targets
+
+![deploy02](./pic/deploy02.png)
+
+- Check at domain name
+
+![deploy03](./pic/deploy03.png)
+
 ---
 
 ## Summary
 
 ### Challenge and Lesson
 
+- User Data is helpful to run a custom bash script when an EC2 instance is provisioned. The skill of bash script is required.
+- CICD is a efficient way to integrate development, deployment, and operation. AWS CodeDeploy, CodeBuild, and CodePipeline are services for CICD.
+  - Install CodeDeploy in EC2 instance.
+  - Create a project in CodeBuild connecting with Github.
+  - Create a application and deployment group in CodeDeploy.
+  - Create a pipeline to integrate with source, build, and deploy.
+- AWS RDS MySQL provides database service.
+- django-environ can be used to configure Django project to use environment variables.
+
 ---
 
 ### Troubleshooting
 
 - The EC2 instance called by Pipeline must have **correct Role(EC2RoleCodeDeploy)** and **reboot**. Otherwise, the deployment will timeout.
-- The bash scripts involed in CodeDeploy log into the log file created within user data. However, user data script executes as root whereas CodeDeploy scripts execute as ubuntu, leading to permission denied and resulting in failure deployment.
+- The bash scripts involed in CodeDeploy log into the log file created within user data. However, user data script executes as `root` whereas CodeDeploy scripts execute as `ubuntu`, leading to **permission denied** and resulting in failure deployment.
   - Solution: Unified the CodeDeploy scripts with a log method using sudo.
 
 ---
