@@ -21,24 +21,24 @@ P_VENV_PATH=${P_HOME}/env                       # path of venv
 P_REPO_PATH=${P_HOME}/${P_GITHUB_REPO_NAME}     # path of repo
 P_PROJECT_PATH=${P_REPO_PATH}/${P_PROJECT_NAME} # path of project, where the manage.py locates.
 
-# log() {
-#     sudo echo -e "$(date +'%Y-%m-%d %R'): ${1}" >>$P_LOG
-# }
+log() {
+    sudo echo -e "$(date +'%Y-%m-%d %R'): ${1}" >>$P_LOG
+}
 
 ###########################################################
 ## Establish virtual environment
 ###########################################################
 # Remove existing venv
-sudo rm -rf $P_VENV_PATH
-# # && log "remove existing venv" || log "Fail: remove existing venv"
+sudo rm -rf $P_VENV_PATH &&
+    log "remove existing venv" || log "Fail: remove existing venv"
 
 # Install python3-venv package
-sudo apt-get -y install python3-venv
-# &&  log "Install python3-venv package" || log "Fail: Install python3-venv package"
-echo -e "$(date +'%Y-%m-%d %R') Install python3-venv package" >>~/log
+sudo apt-get -y install python3-venv &&
+    log "Install python3-venv package" || log "Fail: Install python3-venv package"
 
-python3 -m venv $P_VENV_PATH # Creates virtual environment
-echo -e "$(date +'%Y-%m-%d %R') Creates virtual environment" >>~/log
+# Creates virtual environment
+python3 -m venv $P_VENV_PATH &&
+    log "Creates virtual environment" || log "Fail: Creates virtual environment"
 
 ###########################################################
 ## Install app dependencies
