@@ -1,13 +1,24 @@
 from pathlib import Path
+import environ
+import os
+
+env = environ.Env(
+    # set casting, default debug value is true.
+    DEBUG=(bool, True)
+)
 
 # Build paths inside the project like this: BASE_DIR / 'subdir'.
 BASE_DIR = Path(__file__).resolve().parent.parent
 
+# path of env file
+environ.Env.read_env(Path(Path(BASE_DIR).parent, '.env'))
+print()
+
 # SECURITY WARNING: keep the secret key used in production secret!
-SECRET_KEY = 'django-insecure-nx7(i0i-q3$)t3m@7kzp@$yzlh+srcxw*pcz5ht5tj+bs##1*9'
+SECRET_KEY = env('SECRET_KEY')
 
 # SECURITY WARNING: don't run with debug turned on in production!
-DEBUG = True
+DEBUG = env('DEBUG')
 
 # A list of strings representing the host/domain names that this Django site can serve.
 ALLOWED_HOSTS = ['*']       # allow any
@@ -59,9 +70,13 @@ WSGI_APPLICATION = 'Arguswatcher.wsgi.application'
 
 # region Database
 DATABASES = {
-    'default': {
-        'ENGINE': 'django.db.backends.sqlite3',
-        'NAME': BASE_DIR / 'db.sqlite3',
+    "default": {
+        "ENGINE": "django.db.backends.mysql",
+        "NAME": env('DATABASE'),   # database name
+        "USER": env('USER'),   # user name
+        "PASSWORD": env('PASSWORD'),  # pwd
+        "HOST": env('HOST'),  # local
+        "PORT": "3306",
     }
 }
 

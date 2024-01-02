@@ -5,6 +5,7 @@
 - [ArgusWatcher - Document v0.2](#arguswatcher---document-v02)
 - [Requirements](#requirements)
   - [Analysis of last version](#analysis-of-last-version)
+  - [Current version](#current-version)
 - [Application Development](#application-development)
   - [Create app "AppAccount"](#create-app-appaccount)
   - [Create Login Page](#create-login-page)
@@ -21,8 +22,12 @@
   - [Create a deployment group for CodeDeploy](#create-a-deployment-group-for-codedeploy)
   - [Create a new CodePipeline](#create-a-new-codepipeline)
   - [Test](#test)
-  - [Sile Lab: EC2 istance Launch Template + user data + CodePipeline](#sile-lab-ec2-istance-launch-template--user-data--codepipeline)
-- [Database](#database)
+- [Sile Lab: EC2 istance Launch Template + user data + CodePipeline](#sile-lab-ec2-istance-launch-template--user-data--codepipeline)
+- [Database configuration](#database-configuration)
+  - [Django connect to local MySQL](#django-connect-to-local-mysql)
+  - [`django-eviron`](#django-eviron)
+  - [Create AWS RDS MySQL](#create-aws-rds-mysql)
+  - [Configure Deployment](#configure-deployment)
 - [Summary](#summary)
   - [Challenge and Lesson](#challenge-and-lesson)
   - [Troubleshooting](#troubleshooting)
@@ -33,12 +38,14 @@
 
 ### Analysis of last version
 
-| Problems                  | Solution             |
-| ------------------------- | -------------------- |
-| Time-consuming deployment | 1. Use data; 2. CICD |
-| Use of sqlite3            | AWS RDS              |
+| Problems                  | Solution                         |
+| ------------------------- | -------------------------------- |
+| Time-consuming deployment | 1. Use data; 2. CICD             |
+| Use of sqlite3            | `django-environ`+`AWS RDS MySQL` |
 
 ---
+
+### Current version
 
 - **Django Project:**
 
@@ -46,17 +53,19 @@
     - [x] Sign-in page
     - [x] Profile page
     - [x] Sign-out page
+  - [ ] Connect to MySQL
+    - [x] Local MySQL
+    - [ ] django-environ
+  - [ ] Connect to RDS
 
 - **AWS Cloud resources:**
-  - [ ] Side Lab: using user data for EC2 provision
-  - [ ] CICD
-    - [ ] CodeBuild
-    - [ ] CodeDeploy
-    - [ ] CodePipeline
-    - [ ] Test CICD
-  - [ ] Store App Secret
-    - [ ] SSM: parameter store for evivronment variable
-    - [ ] Test
+  - [x] Side Lab: using user data for EC2 provision
+  - [x] CICD
+    - [x] CodeBuild
+    - [x] CodeDeploy
+    - [x] CodePipeline
+    - [x] Test CICD
+  - [x] Sile Lab: EC2 istance Launch Template + user data + CodePipeline
   - [ ] Database
     - [ ] Create RDS MySQL
     - [ ] Connect
@@ -474,7 +483,7 @@ sudo service codedeploy-agent status
 
 ---
 
-### Sile Lab: EC2 istance Launch Template + user data + CodePipeline
+## Sile Lab: EC2 istance Launch Template + user data + CodePipeline
 
 - Create an EC2 Launch Template
 
@@ -562,7 +571,190 @@ sudo service codedeploy-agent status
 
 ---
 
-## Database
+## Database configuration
+
+### Django connect to local MySQL
+
+- install `pymysql` package for mysql
+
+```sh
+pip install pymysql
+```
+
+- Add codes into `__init__.py`
+
+```py
+import pymysql
+pymysql.install_as_MySQLdb()
+```
+
+---
+
+- `settings.py`
+
+```py
+# region Database
+DATABASES = {
+    "default": {
+        "ENGINE": "django.db.backends.mysql",
+        "NAME": "",   # database name
+        "USER": "",   # user name
+        "PASSWORD": "", #pwd
+        "HOST": "localhost",  # local
+        "PORT": "3306",
+    }
+}
+```
+
+![local_mysql01](./pic/local_mysql01.png)
+
+![local_mysql02](./pic/local_mysql02.png)
+
+---
+
+- Test Django local
+  - Create superuser
+  - run server locally
+
+![local_mysql03](./pic/local_mysql03.png)
+
+---
+
+### `django-eviron`
+
+- `django-environ`
+
+  - the Python package that allows to configure Django application using environment variables obtained from an environment file and provided by the OS.
+
+- Why?
+
+  - Critical parameters, such as SECRET_KEY are stored in the settings.py which is unencrypted and exposed on the Github, resulting a security risk.
+  - Central management of parameters.
+
+- **install package**
+  - ref:https://pypi.org/project/django-environ/
+
+```py
+pip install django-environ
+```
+
+- create an environment file `.env` in the root of the project.
+
+```conf
+DEBUG=True
+SECRET_KEY=SECRET_KEY
+DATABASE=DB_NAME
+HOST=DB_HOST
+USER=DB_USER
+PASSWORD=DB_PWD
+```
+
+---
+
+- Modify settings.py
+
+```py
+from pathlib import Path
+import environ
+import os
+
+env = environ.Env(
+    # set casting, default debug value is true.
+    DEBUG=(bool, True)
+)
+# path of env file
+environ.Env.read_env(Path(Path(BASE_DIR).parent.parent, '.env'))  # the env file is placed in the same dir as the repo
+
+# False if not in os.environ because of casting above
+SECRET_KEY = env('SECRET_KEY')
+DEBUG = env('DEBUG')
+
+# region Database
+DATABASES = {
+    "default": {
+        "ENGINE": "django.db.backends.mysql",
+        "NAME": env('DATABASE'),   # database name
+        "USER": env('USER'),   # user name
+        "PASSWORD": env('PASSWORD'), #pwd
+        "HOST": env('HOST'),  # local
+        "PORT": "3306",
+    }
+}
+```
+
+- Test locally
+
+---
+
+### Create AWS RDS MySQL
+
+- skip, using the existing database;
+
+---
+
+- Test Connection with RDS using local terminal
+
+![rds01](./pic/rds01.png)
+
+- Create database for the current project.
+- Modified the database connection value in the env file
+- Django makemigrations and migrate
+- Create a superuser for RDS
+- run django app locally connecting with RDS.
+  - local ip
+  - rds user
+
+![rds02](./pic/rds02.png)
+
+---
+
+### Configure Deployment
+
+- Problem:
+
+  - The env file that is required to run app is not in the repo. Thus, it is not create or configure when commiting and pushing.
+  - It can be create or configure with SSH to EC2 instance. However, it means a manual configuration per commit and push, which do not make sense with CICD.
+
+- Solution:
+  - Creation of env file can be executed when the EC2 instance is created. Therefore, it can leverage the use data to create env file.
+  - To improve efficiency, EC2 template can be used.
+    - One reason is that the template cannot be access publicly, and thus the secret info in the env file will not be exposed.
+    - The another reason is that user data can be edited within the template, providing an efficient way to manage env file.
+    - Lastly, template can be versioning. When the values in the env file have been changed, a new version of template can be created.
+
+---
+
+- Update the user data within the Launch Template
+  - source template: arguswatcherTemplate
+  - add Profile: CodeDeploy role
+  - user data
+
+```sh
+P_HOME=/home/ubuntu # path of home dir
+
+###########################################################
+## Create env file
+###########################################################
+# create env file for django project
+P_ENV=${P_HOME}/.env # env file
+sudo bash -c "cat >$P_ENV <<ENV_FILE
+DEBUG=False
+SECRET_KEY='SECRET_KEY'
+DATABASE='DATABASE'
+HOST='HOST'
+USER='USER'
+PASSWORD='PASSWORD'
+ENV_FILE" &&
+    log "create env file." || log "Fail: create env file."
+
+```
+
+---
+
+- update dependencies: pip freeze
+- check `.gitignore`, make sure env file will not add and commit.
+- commit and push
+- Test
 
 ---
 

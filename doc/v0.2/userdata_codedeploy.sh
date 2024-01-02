@@ -19,6 +19,9 @@ log() {
 
 touch $P_LOG
 
+###########################################################
+## Install CodeDeploy
+###########################################################
 # update the package on Linux system.
 sudo DEBIAN_FRONTEND=noninteractive apt-get -y update &&
     log "update os packages." || log "Fail: update os packages"
@@ -46,3 +49,18 @@ sudo chmod +x ./install &&
 # install and log the output to the tmp/logfile.file
 sudo ./install auto >/tmp/logfile &&
     log "install and log the output" || log "Fail: install and log the output"
+
+###########################################################
+## Create env file
+###########################################################
+# create env file for django project
+P_ENV=${P_HOME}/.env # env file
+sudo bash -c "cat >$P_ENV <<ENV_FILE
+DEBUG=False
+SECRET_KEY='SECRET_KEY'
+DATABASE='DATABASE'
+HOST='HOST'
+USER='USER'
+PASSWORD='PASSWORD'
+ENV_FILE" &&
+    log "create env file." || log "Fail: create env file."
