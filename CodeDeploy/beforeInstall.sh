@@ -7,7 +7,17 @@
 #Description of the script:
 # Script for application start, including removal of existing folde
 
-sudo rm -rf /home/ubuntu/AWS_arguswatcher_net/*
-sudo rm -r /home/ubuntu/log
-touch /home/ubuntu/log
-sudo echo -e "$(date +'%Y-%m-%d %R') remove existing folder" >>~/log
+###########################################################
+## Arguments
+###########################################################
+
+P_HOME=/home/ubuntu                         # path of home dir
+P_LOG=${P_HOME}/log                         # log file
+P_GITHUB_REPO_NAME=AWS_arguswatcher_net     # github repo name
+P_REPO_PATH=${P_HOME}/${P_GITHUB_REPO_NAME} # path of repo
+log() {
+    sudo echo -e "$(date +'%Y-%m-%d %R'): ${1}" >>$P_LOG
+}
+
+sudo rm -rf $P_REPO_PATH
+log "remove existing folder"

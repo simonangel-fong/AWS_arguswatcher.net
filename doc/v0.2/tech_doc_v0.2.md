@@ -24,6 +24,8 @@
   - [Sile Lab: EC2 istance Launch Template + user data + CodePipeline](#sile-lab-ec2-istance-launch-template--user-data--codepipeline)
 - [Database](#database)
 - [Summary](#summary)
+  - [Challenge and Lesson](#challenge-and-lesson)
+  - [Troubleshooting](#troubleshooting)
 
 ---
 
@@ -565,6 +567,16 @@ sudo service codedeploy-agent status
 ---
 
 ## Summary
+
+### Challenge and Lesson
+
+---
+
+### Troubleshooting
+
+- The EC2 instance called by Pipeline must have **correct Role(EC2RoleCodeDeploy)** and **reboot**. Otherwise, the deployment will timeout.
+- The bash scripts involed in CodeDeploy log into the log file created within user data. However, user data script executes as root whereas CodeDeploy scripts execute as ubuntu, leading to permission denied and resulting in failure deployment.
+  - Solution: Unified the CodeDeploy scripts with a log method using sudo.
 
 ---
 
