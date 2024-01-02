@@ -43,28 +43,32 @@ python3 -m venv $P_VENV_PATH &&
 ###########################################################
 ## Install app dependencies
 ###########################################################
+# activate venv
+source ${P_VENV_PATH}/bin/activate &&
+    log "Activate venv" || log "Fail: Activate venv"
 
-source ${P_VENV_PATH}/bin/activate # activate venv
-echo -e "$(date +'%Y-%m-%d %R') Activate venv" >>~/log
+# install dependencies based on the requirements.txt
+pip install -r ${P_REPO_PATH}/requirements.txt &&
+    log "install dependencies based on the requirements.txt" || log "Fail: install dependencies based on the requirements.txt"
 
-pip install -r ${P_REPO_PATH}/requirements.txt # install dependencies based on the requirements.txt
-echo -e "$(date +'%Y-%m-%d %R') install dependencies based on the requirements.txt" >>~/log
-
-deactivate # deactivate venv
-echo -e "$(date +'%Y-%m-%d %R') Deactivate venv" >>~/log
+# deactivate venv
+deactivate &&
+    log "Deactivate venv" || log "Fail: Deactivate venv"
 
 ###########################################################
 ## Install gunicorn in venv
 ###########################################################
+# activate venv
+source ${P_VENV_PATH}/bin/activate &&
+    log "Activate venv" || log "Fail: Activate venv"
 
-source ${P_VENV_PATH}/bin/activate # activate venv
-echo -e "$(date +'%Y-%m-%d %R') Activate venv" >>~/log
+# install gunicorn
+pip install gunicorn &&
+    log "install gunicorn" || log "Fail: install gunicorn"
 
-pip install gunicorn # install gunicorn
-echo -e "$(date +'%Y-%m-%d %R') install gunicorn" >>~/log
-
-deactivate # deactivate venv
-echo -e "$(date +'%Y-%m-%d %R') deactivate venv" >>~/log
+# deactivate venv
+deactivate &&
+    log "Deactivate venv" || log "Fail: Deactivate venv"
 
 ###########################################################
 ## Configuration gunicorn.socket
@@ -80,8 +84,8 @@ ListenStream=/run/gunicorn.sock
 
 [Install]
 WantedBy=sockets.target
-SOCK"
-echo -e "$(date +'%Y-%m-%d %R') Configure gunicorn.socket." >>~/log
+SOCK" &&
+    log "Configure gunicorn.socket" || log "Fail: Configure gunicorn.socket"
 
 ###########################################################
 ## Configuration gunicorn.service
@@ -106,33 +110,39 @@ ExecStart=/home/ubuntu/env/bin/gunicorn \
 
 [Install]
 WantedBy=multi-user.target
-SERVICE"
-echo -e "$(date +'%Y-%m-%d %R') Configure gunicorn.service." >>~/log
+SERVICE" &&
+    log "Configure gunicorn.service." || log "Fail: Configure gunicorn.service."
 
 ###########################################################
 ## Apply gunicorn configuration
 ###########################################################
-sudo systemctl daemon-reload # reload daemon
-echo -e "$(date +'%Y-%m-%d %R') reload daemon." >>~/log
+# reload daemon
+sudo systemctl daemon-reload &&
+    log "reload daemon." || log "Fail: reload daemon."
 
-sudo systemctl start gunicorn.socket # Start gunicorn
-echo -e "$(date +'%Y-%m-%d %R') Start gunicorn." >>~/log
+# Start gunicorn
+sudo systemctl start gunicorn.socket &&
+    log "Start gunicorn." || log "Fail: Start gunicorn."
 
-sudo systemctl enable gunicorn.socket # enable on boots
-echo -e "$(date +'%Y-%m-%d %R') enable on boots." >>~/log
+# enable on boots
+sudo systemctl enable gunicorn.socket &&
+    log "enable on boots." || log "Fail: enable on boots."
 
-sudo systemctl restart gunicorn # restart gunicorn
-echo -e "$(date +'%Y-%m-%d %R') restart gunicorn." >>~/log
+# restart gunicorn
+sudo systemctl restart gunicorn &&
+    log "restart gunicorn." || log "Fail: restart gunicorn."
 
 ###########################################################
 ## Configuration nginx
 ###########################################################
-sudo apt-get install -y nginx # install nginx
-echo -e "$(date +'%Y-%m-%d %R') install nginx." >>~/log
+# install nginx
+sudo apt-get install -y nginx &&
+    log "install nginx." || log "Fail: install nginx."
 
 nginx_conf=/etc/nginx/nginx.conf
-sudo sed -i '1cuser root;' $nginx_conf # overwrites user
-echo -e "$(date +'%Y-%m-%d %R') overwrites user." >>~/log
+# overwrites user
+sudo sed -i '1cuser root;' $nginx_conf &&
+    log "overwrites user." || log "Fail: overwrites user."
 
 # create conf file
 django_conf=/etc/nginx/sites-available/django.conf
@@ -154,24 +164,26 @@ location / {
     proxy_pass http://unix:/run/gunicorn.sock;
 }
 }
-DJANGO_CONF"
-echo -e "$(date +'%Y-%m-%d %R') create django.conf file." >>~/log
+DJANGO_CONF" &&
+    log "create django.conf file." || log "Fail: create django.conf file."
 
 #  Creat link in sites-enabled directory
-sudo ln -sf /etc/nginx/sites-available/django.conf /etc/nginx/sites-enabled
-echo -e "$(date +'%Y-%m-%d %R') Creat link in sites-enabled directory." >>~/log
+sudo ln -sf /etc/nginx/sites-available/django.conf /etc/nginx/sites-enabled &&
+    log "Creat link in sites-enabled directory." || log "Fail: Creat link in sites-enabled directory."
 
-sudo systemctl restart nginx # restart nginx
-echo -e "$(date +'%Y-%m-%d %R') restart nginx." >>~/log
+# restart nginx
+sudo systemctl restart nginx &&
+    log "restart nginx." || log "Fail: restart nginx."
 
 ###########################################################
 ## Configuration supervisor
 ###########################################################
-sudo apt-get install -y supervisor # install supervisor
-echo -e "$(date +'%Y-%m-%d %R') install supervisor." >>~/log
+# install supervisor
+sudo apt-get install -y supervisor
 
-sudo mkdir -p /var/log/gunicorn # create directory for logging
-echo -e "$(date +'%Y-%m-%d %R') create directory for logging." >>~/log
+# create directory for logging
+sudo mkdir -p /var/log/gunicorn &&
+    log "create directory for logging." || log "Fail: create directory for logging."
 
 supervisor_gunicorn=/etc/supervisor/conf.d/gunicorn.conf # create configuration file
 sudo bash -c "cat >$supervisor_gunicorn <<SUP_GUN
@@ -185,17 +197,20 @@ sudo bash -c "cat >$supervisor_gunicorn <<SUP_GUN
 
 [group:guni]
     programs:gunicorn
-SUP_GUN"
-echo -e "$(date +'%Y-%m-%d %R') create supervisor file for gunicorn logging." >>~/log
+SUP_GUN" &&
+    log "create supervisor file for gunicorn logging." || log "Fail: create supervisor file for gunicorn logging."
 
-sudo supervisorctl reread # tell supervisor read configuration file
-echo -e "$(date +'%Y-%m-%d %R') tell supervisor read configuration file." >>~/log
+# tell supervisor read configuration file
+sudo supervisorctl reread &&
+    log "tell supervisor read configuration file." || log "Fail: tell supervisor read configuration file."
 
-sudo supervisorctl update # update supervisor configuration
-echo -e "$(date +'%Y-%m-%d %R') update supervisor configuration." >>~/log
+# update supervisor configuration
+sudo supervisorctl update &&
+    log "update supervisor configuration." || log "Fail: update supervisor configuration."
 
-sudo systemctl daemon-reload
-echo -e "$(date +'%Y-%m-%d %R') daemon-reload." >>~/log
+sudo systemctl daemon-reload &&
+    log "daemon-reload." || log "Fail: daemon-reload."
 
-sudo supervisorctl reload # Restarted supervisord
-echo -e "$(date +'%Y-%m-%d %R') Restarted supervisord." >>~/log
+# Restarted supervisord
+sudo supervisorctl reload &&
+    log "Restarted supervisord." || log "Fail: Restarted supervisord."
