@@ -29,6 +29,7 @@
   - [Create AWS RDS MySQL](#create-aws-rds-mysql)
   - [Access to RDS instance within EC2 Instance](#access-to-rds-instance-within-ec2-instance)
   - [Configure Deployment](#configure-deployment)
+- [AWS Architect](#aws-architect)
 - [Summary](#summary)
   - [Challenge and Lesson](#challenge-and-lesson)
   - [Troubleshooting](#troubleshooting)
@@ -54,10 +55,10 @@
     - [x] Sign-in page
     - [x] Profile page
     - [x] Sign-out page
-  - [ ] Connect to MySQL
+  - [x] Connect to MySQL
     - [x] Local MySQL
-    - [ ] django-environ
-  - [ ] Connect to RDS
+    - [x] django-environ
+  - [x] Connect to RDS
 
 - **AWS Cloud resources:**
   - [x] Side Lab: using user data for EC2 provision
@@ -67,10 +68,10 @@
     - [x] CodePipeline
     - [x] Test CICD
   - [x] Sile Lab: EC2 istance Launch Template + user data + CodePipeline
-  - [ ] Database
-    - [ ] Create RDS MySQL
-    - [ ] Connect
-    - [ ] Test RDS
+  - [x] Database
+    - [x] Create RDS MySQL
+    - [x] Connect
+    - [x] Test RDS
 
 ---
 
@@ -699,6 +700,8 @@ DATABASES = {
 
 ![rds07](./pic/rds07.png)
 
+- To make dev and test easier, enable Public acces.
+
 ![rds08](./pic/rds08.png)
 
 ![rds09](./pic/rds09.png)
@@ -792,18 +795,24 @@ ENV_FILE" &&
 
 ---
 
+## AWS Architect
+
+![arguswatcher_v0.2](./diagram/arguswatcher_v0.2.png)
+
+---
+
 ## Summary
 
 ### Challenge and Lesson
 
-- User Data is helpful to run a custom bash script when an EC2 instance is provisioned. The skill of bash script is required.
-- CICD is a efficient way to integrate development, deployment, and operation. AWS CodeDeploy, CodeBuild, and CodePipeline are services for CICD.
-  - Install CodeDeploy in EC2 instance.
-  - Create a project in CodeBuild connecting with Github.
-  - Create a application and deployment group in CodeDeploy.
-  - Create a pipeline to integrate with source, build, and deploy.
-- AWS RDS MySQL provides database service.
-- django-environ can be used to configure Django project to use environment variables.
+- **User Data** is helpful to run a custom bash script when an EC2 instance is provisioned. The skill of bash script is required.
+- **CICD** is a efficient way to integrate development, deployment, and operation. AWS CodeDeploy, CodeBuild, and CodePipeline are services for CICD.
+  - Install `CodeDeploy` in EC2 instance.
+  - Create a project in CodeBuild connecting with `Github`.
+  - Create a application and deployment group in `CodeDeploy`.
+  - Create a **pipeline** to integrate with source, build, and deploy.
+- `AWS RDS MySQL` provides database service.
+- `django-environ` can be used to configure Django project to use environment variables.
 
 ---
 
@@ -812,6 +821,25 @@ ENV_FILE" &&
 - The EC2 instance called by Pipeline must have **correct Role(EC2RoleCodeDeploy)** and **reboot**. Otherwise, the deployment will timeout.
 - The bash scripts involed in CodeDeploy log into the log file created within user data. However, user data script executes as `root` whereas CodeDeploy scripts execute as `ubuntu`, leading to **permission denied** and resulting in failure deployment.
   - Solution: Unified the CodeDeploy scripts with a log method using sudo.
+- While the connection via Mysql client can be established, the migrations of Django can fail. The reason is that the migration need authenication using Ubuntu user.
+
+![troubleshooting](./pic/troubleshooting01.png)
+
+- Solution: A user named "'ubuntu'@'ec2-dns'" need to be created in the Mysql. Otherwise, migrations fails due to access denied.
+
+```sql
+/*
+ubuntu: the username of ubuntu os
+pwd: password
+ec2-dns: dns name of the EC2
+database_name: database name of the Django app
+ */
+CREATE USER 'ubuntu'@'ec2-dns' IDENTIFIED BY 'pwd';
+GRANT ALL PRIVILEGES ON database_name.* TO 'ubuntu'@'ec2-dns';
+FLUSH PRIVILEGES;
+```
+
+![troubleshooting](./pic/troubleshooting01.png)
 
 ---
 

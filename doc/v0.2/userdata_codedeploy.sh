@@ -64,3 +64,8 @@ USER='USER'
 PASSWORD='PASSWORD'
 ENV_FILE" &&
     log "create env file." || log "Fail: create env file."
+
+###########################################################
+## install mysql package
+###########################################################
+sudo apt install -y mysql-client

@@ -24,6 +24,9 @@ A Django-based blog platform showcasing web development proficiency. Users can s
   - HTML, CSS, JavaScript
   - Database with Django ORM
 - AWS Cloud
+  - EC2
+  - VPC
+  - RDS
 
 ---
 
