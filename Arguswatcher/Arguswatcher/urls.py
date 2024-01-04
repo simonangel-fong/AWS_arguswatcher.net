@@ -5,6 +5,7 @@ from .views import HomeView
 
 urlpatterns = [
     path('', HomeView.as_view(), name="home"),
-    path("accounts/", include("AppAccount.urls")),
     path('admin/', admin.site.urls),
+    path("accounts/", include("AppAccount.urls")),
+    path('blog/', include('AppBlog.urls')),
 ]

@@ -1,0 +1,45 @@
+{% extends "layout/base.html" %}{% block main %} {% load django_bootstrap5 %}
+<header class="pt-4">{% include "AppBlog/header.html" %}</header>
+<hr />
+<div class="container-fluid">
+  <div class="row">
+    <div class="col-md-4">{% include "AppBlog/sidebar.html" %}</div>
+    <div class="col-md-8">
+      <form method="post" novalidate>
+        {% csrf_token %}
+        <div class="row">
+          <div class="col-12 my-2">{% bootstrap_form form %}</div>
+          <div class="col-12 my-2">
+            <div class="d-flex">
+              <a
+                class="btn btn-outline-secondary rounded-pill"
+                href="{% url 'AppBlog:blog_list' %}"
+                >Back</a
+              >
+              <button
+                class="btn btn-outline-secondary rounded-pill ms-auto"
+                type="reset"
+              >
+                Reset
+              </button>
+              <button
+                class="btn btn-outline-primary rounded-pill ms-3"
+                type="submit"
+              >
+                New Hashtag
+              </button>
+            </div>
+          </div>
+        </div>
+      </form>
+    </div>
+  </div>
+</div>
+
+{% endblock %} {% block js %}
+<script>
+  tinymce.init({
+    selector: "textarea",
+  });
+</script>
+{% endblock %}

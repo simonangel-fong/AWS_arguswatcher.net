@@ -1,6 +1,5 @@
 from pathlib import Path
 import environ
-import os
 
 env = environ.Env(
     # set casting, default debug value is true.
@@ -35,6 +34,7 @@ INSTALLED_APPS = [
     'django.contrib.staticfiles',
     "django_bootstrap5",
     "AppAccount",
+    "AppBlog"
 ]
 
 MIDDLEWARE = [

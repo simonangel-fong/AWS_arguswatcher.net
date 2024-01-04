@@ -1,0 +1,50 @@
+<div class="flex-shrink-0">
+  <ul class="list-unstyled p-0">
+    <li class="mb-1">
+      <button
+        class="btn btn-toggle d-inline-flex align-items-center rounded border-0 collapsed"
+        data-bs-toggle="collapse"
+        data-bs-target="#home-collapse"
+        aria-expanded="true"
+      >
+        Hashtags
+      </button>
+      <div class="collapse show" id="home-collapse">
+        <ul class="btn-toggle-nav list-unstyled fw-normal pb-1 small">
+          {% for tag in hashtags %}
+          <li>
+            <a
+              href="{% url 'AppBlog:blog_by_hashtag' slug=tag.slug %}"
+              class="link-body-emphasis d-inline-flex text-decoration-none rounded"
+              >{{tag.name}}
+            </a>
+          </li>
+          {% endfor %}
+        </ul>
+      </div>
+    </li>
+    {% if user.is_authenticated %}
+    <li>
+      <a
+        href="{% url 'AppBlog:hashtag_create' %}"
+        class="link-body-emphasis d-inline-flex text-decoration-none rounded"
+      >
+        <i class="bi bi-bookmark-plus"></i>
+        <span class="ps-2">New Hashtag</span>
+      </a>
+    </li>
+    <li class="border-top my-3"></li>
+
+    <li>
+      <a
+        href="{% url 'AppBlog:blog_create' %}"
+        class="link-body-emphasis d-inline-flex text-decoration-none rounded"
+      >
+        <i class="bi bi-plus-circle"></i>
+        <span class="ps-2">New Blog</span>
+      </a>
+    </li>
+
+    {% endif %}
+  </ul>
+</div>

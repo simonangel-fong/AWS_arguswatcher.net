@@ -1,0 +1,21 @@
+{% extends "layout/base.html" %} {% block main %}
+<header class="pt-4">{% include "AppBlog/header.html" %}</header>
+<hr />
+<div class="container-fluid">
+  <div class="row">
+    <div class="col-md-4">{% include "AppBlog/sidebar.html" %}</div>
+    <div class="col-md-8">
+      {% for hashtag in hashtags %}
+      <a
+        class="btn btn-primary btn-sm rounded-pill mx-2"
+        href="{% url 'AppBlog:blog_by_hashtag' hashtag.slug %}"
+      >
+        {{hashtag.name}}
+      </a>
+      {% empty %}
+      <p class="fs-4">No posted blog.</p>
+      {% endfor %}
+    </div>
+  </div>
+</div>
+{% endblock %}

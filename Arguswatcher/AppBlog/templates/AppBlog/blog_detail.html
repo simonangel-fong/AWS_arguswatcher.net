@@ -1,0 +1,61 @@
+{% extends "layout/base.html" %} {% block main %}
+<header class="pt-4">{% include "AppBlog/header.html" %}</header>
+<hr />
+<div class="container-fluid">
+  <div class="row">
+    <div class="col-md-4">{% include "AppBlog/sidebar.html" %}</div>
+    <div class="col-md-8">
+      <div class="col-12 py-3">
+        <!-- button -->
+        <div class="col-12 pb-4">
+          <div class="d-flex">
+            {% if user.is_authenticated %}
+            <a
+              class="btn btn-outline-secondary rounded-pill me-auto"
+              href="{% url 'AppBlog:blog_list' %}"
+              >Back</a
+            >
+            <a
+              class="btn btn-outline-primary rounded-pill me-3"
+              href="{% url 'AppBlog:blog_update' pk=blog.pk %}"
+              >Update</a
+            >
+            <a
+              class="btn btn-outline-danger rounded-pill"
+              href="{% url 'AppBlog:blog_delete' pk=blog.pk %}"
+              >Delete</a
+            >
+            {% endif %}
+          </div>
+        </div>
+        <!-- article -->
+        <article id="article" class="pt-3">
+          <h2 class="link-body-emphasis pb-4 heading">{{blog.title}}</h2>
+          <p class="fw-normal text-body-secondary">
+            <span>
+              {{blog.created_at|date:'F d, Y G:i:s'}} by {{blog.author}}
+            </span>
+            {% if user.is_authenticated %} {% if blog.post_at %}
+            <small class="ms-3">Published<i class="bi bi-check-lg"></i></small>
+            {% else %}
+            <a
+              class="btn btn-success btn-sm ms-3"
+              href="{% url 'AppBlog:post_blog' pk=blog.pk %}"
+            >
+              Publish this post
+            </a>
+            {% endif %} {% endif %}
+          </p>
+          <p>{{blog.content|safe|linebreaks}}</p>
+        </article>
+      </div>
+    </div>
+  </div>
+</div>
+{% endblock %} {% block js %}
+<script>
+  tinymce.init({
+    selector: ".editor",
+  });
+</script>
+{% endblock %}

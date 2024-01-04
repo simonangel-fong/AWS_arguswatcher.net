@@ -1,0 +1,58 @@
+{% extends "layout/base.html" %} {% block main %}
+<header class="pt-4">{% include "AppBlog/header.html" %}</header>
+<hr />
+<div class="container-fluid">
+  <div class="row">
+    <div class="col-md-4"></div>
+    <div class="col-md-8">
+      <form method="post" class="needs-validation">
+        {% csrf_token %}
+        <!-- {{form.author}} -->
+        {% if form.author.errors %} {{form.author.errors}} {% endif %}
+        <div class="mb-3">
+          <label for="id_title" class="label form-label">Title</label>
+          {{form.title}} {% if form.title.errors %} {% endif %}
+          <small class="text-danger">{{form.title.errors}}</small>
+        </div>
+
+        <div class="mb-3">
+          <label for="id_content" class="label form-label">Post Content</label>
+          {{form.content}} {% if form.content.errors %}
+          <small class="text-danger">{{form.content.errors}}</small>
+          {% endif %}
+        </div>
+        <div class="my-5 d-flex">
+          {% if form.instance.pk %}
+          <a
+            class="btn btn-outline-secondary rounded-pill"
+            href="{% url 'AppBlog:blog_detail' pk=form.instance.pk %}"
+            >Cancel</a
+          >
+          <button
+            class="btn btn-outline-primary rounded-pill ms-auto"
+            type="submit"
+          >
+            Update
+          </button>
+          {% else %}
+          <a class="btn btn-outline-secondary rounded-pill" href="#">Cancel</a>
+          <button
+            class="btn btn-outline-primary rounded-pill ms-auto"
+            type="submit"
+          >
+            Create
+          </button>
+          {% endif %}
+        </div>
+      </form>
+    </div>
+  </div>
+</div>
+
+{% endblock %} {% block js %}
+<script>
+  tinymce.init({
+    selector: ".editor",
+  });
+</script>
+{% endblock %}
