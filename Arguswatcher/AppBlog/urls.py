@@ -1,6 +1,6 @@
 from django.urls import path
 from .views import (DraftListView, BlogCreateView, BlogDetailView, BlogListView, BlogDeleteView, BlogUpdateView, post_blog,
-                    HashtagListView, HashtagCreateView, blog_by_hashtag)
+                    blog_by_hashtag)
 
 app_name = 'AppBlog'
 
@@ -15,8 +15,6 @@ urlpatterns = [
     path('post/<int:pk>', post_blog, name="post_blog"),
 
     # hashtag
-    path('hashtag/list/', HashtagListView.as_view(), name='hashtag_list'),
-    path('hashtag/create/', HashtagCreateView.as_view(), name='hashtag_create'),
     path("hashtag/hashtag=<slug:slug>",
          view=blog_by_hashtag, name='blog_by_hashtag'),
 ]

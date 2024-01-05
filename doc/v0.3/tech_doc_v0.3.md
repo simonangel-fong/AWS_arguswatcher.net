@@ -8,7 +8,9 @@
 - [Application Development - Blog management](#application-development---blog-management)
   - [Create app `AppBlog`](#create-app-appblog)
   - [Blog management](#blog-management)
-  - [Hashtag management](#hashtag-management)
+  - [Hashtag](#hashtag)
+  - [Update profile page](#update-profile-page)
+  - [Test, Commit, and Push](#test-commit-and-push)
 - [AWS Architect](#aws-architect)
 - [Summary](#summary)
   - [Challenge and Lesson](#challenge-and-lesson)
@@ -30,11 +32,10 @@
     - [x] Update
     - [x] Delete
     - [x] Publish
+    - [x] HashTag
     - [x] filter by hashtag
-  - [x] HashTag
-    - [x] List
-    - [x] Create
-    - [ ] Remove
+    - [x] attach hashtag
+  - [x] Design Home Page
 
 - **AWS Cloud resources:**
   - [ ] Auto Scalling Group
@@ -55,6 +56,7 @@
 - only login user can ud a blog.
 - Anonymous user can read a blog.
 - No comment function for the current version.
+- Hashtag managed by admin
 
 ---
 
@@ -74,6 +76,8 @@ py manage.py startapp AppBlog
 ```py
 from django.db import models
 from django.urls import reverse
+from django.utils import timezone
+from django.utils.text import slugify
 
 
 class Blog(models.Model):
@@ -90,6 +94,9 @@ class Blog(models.Model):
     created_at = models.DateTimeField(auto_now_add=True)
     # last updated time, automatically set the field to now every time the object is saved.
     updated_at = models.DateTimeField(auto_now=True)
+    # the date when current post is set to be published,  It can be blan or null when the post is not set published.
+    post_at = models.DateTimeField(blank=True, null=True)
+    hashtags = models.ManyToManyField('Hashtag')
 
     # model metadata
     class Meta:
@@ -112,6 +119,12 @@ class Blog(models.Model):
         # using reverse to transform URLConf name into a url of current blog.
         # passing the pk of current blog an argument.
         return reverse("blog_detail", kwargs={"pk": self.pk})
+
+    def post_draft(self):
+        ''' post a draft into a blog '''
+        if not self.post_at:
+            self.post_at = timezone.now()
+            self.save()
 ```
 
 ---
@@ -145,31 +158,37 @@ admin.site.register(Blog)
 
 ### Blog management
 
-- Views
+- Views:list
 
 ```py
 class DraftListView(LoginRequiredMixin, ListView):
+    ''' list all drafts '''
     model = Blog
-
-    template_name = 'AppBlog/blog_list.html'
-    context_object_name = 'blog_list'
+    template_name = 'AppBlog/blog_draft_list.html'
+    context_object_name = 'draft_list'
     extra_context = {"heading": "Draft List",
                      "title": "Draft List"}  # context for render
 
     def get_queryset(self):
         # Filter drafts based on the currently logged-in user
         return Blog.objects.filter(author=self.request.user, post_at__isnull=True)
+
+    def get_context_data(self, **kwargs):
+        context = super().get_context_data(**kwargs)
+        context['hashtags'] = Hashtag.objects.all()
+        return context
 ```
 
 - Urls
 
 ```py
 from django.urls import path
-from .views import DraftListView
+from .views import (DraftListView)
 
 app_name = 'AppBlog'
 
 urlpatterns = [
+    # blog management
     path('drafts/', DraftListView.as_view(), name='draft_list'),
 ]
 ```
@@ -181,46 +200,51 @@ urlpatterns = [
 ```
 
 - template
+  - create a AppBlog_base.html template for AppBlog extending from the base.html
 
 ```html
-{% extends "layout/base.html" %} {% block main %}
-<header class="pt-4">
-  <h1 class="heading text-center">{{heading}}</h1>
-  <hr />
-  <nav aria-label="breadcrumb">
-    <ol class="breadcrumb breadcrumb-chevron p-3 bg-body-tertiary rounded-3">
-      <li class="breadcrumb-item">
-        <a class="link-body-emphasis" href="{% url 'home' %}">
-          <i class="bi bi-house-door-fill"></i>
-          <span class="visually-hidden">Home</span>
-        </a>
-      </li>
-      <li class="breadcrumb-item active" aria-current="page">{{heading}}</li>
-    </ol>
-  </nav>
-</header>
-
-<div class="container p-4">
-  {% for blog in blog_list %}
+{% extends "layout/base.html" %} {% block main%}
+<header class="pt-4">{% include "AppBlog/layout/header.html" %}</header>
+<hr />
+<div class="container-fluid">
   <div class="row">
-    <div class="col-8">
-      <article class="py-4">
-        <h3 class="link-body-emphasis mb-2 heading">
-          <a href="#"> {{blog.title}} </a>
-        </h3>
-        <p class="fw-normal text-body-secondary">
-          {{blog.created_date|date:'F d, Y'}} by <a href="#">{{blog.author}}</a>
-          Comment: {{blog.comment_set.count}}
-        </p>
-
-        <p>{{blog.content|safe|linebreaks|truncatewords_html:72}}</p>
-      </article>
+    <div class="col-lg-3 col-md-12">
+      {% include "AppBlog/layout/sidebar.html" %}
     </div>
+    <div class="col-lg-9 col-md-12">{% block blog_page %}{% endblock %}</div>
   </div>
+</div>
+{% endblock %}
+```
+
+- Each page of AppBlog extends from the AppBlog_base.html.
+
+```html
+{% extends "AppBlog/layout/AppBlog_base.html" %} {% block blog_page %}
+<div>
+  {% for blog in draft_list %}
+  <article class="py-4">
+    <h3 class="link-body-emphasis">
+      <a href="{% url 'AppBlog:blog_detail' pk=blog.pk %}"> {{blog.title}} </a>
+    </h3>
+    <p class="fw-normal text-body-secondary">
+      <span> {{blog.created_at|date:'F-d, Y G:i:s'}} by {{blog.author}} </span>
+    </p>
+
+    <p>{{blog.content|safe|linebreaks|truncatewords_html:48}}</p>
+    <hr />
+  </article>
+
   {% empty %}
-  <p class="fs-4">No Data.</p>
+  <p class="fs-4">No draft.</p>
   {% endfor %}
 </div>
+{% endblock %} {% block js %}
+<script>
+  tinymce.init({
+    selector: ".editor",
+  });
+</script>
 {% endblock %}
 ```
 
@@ -234,7 +258,7 @@ urlpatterns = [
 
 ---
 
-### Hashtag management
+### Hashtag
 
 - model
   - Many to many relationship
@@ -273,31 +297,33 @@ class Hashtag(models.Model):
         ordering = ["name"]     # default ordered by name
 ```
 
-- Create pages
+---
 
-- Due the complexity of front end, relationship between blog and hashtag will be managed in admin site.
-- Test locally
-  - text sample tool:https://www.loremipzum.com/en/text-generator
+- Update blog pages to for hashtag pages
 
-![hashtag01](./pic/hashtag01.png)
+---
 
-![hashtag02](./pic/hashtag02.png)
-
-![hashtag03](./pic/hashtag03.png)
+### Update profile page
 
 - update profile page
 
-![hashtag04](./pic/hashtag04.png)
+![hashtag04](./pic/blog04.png)
 
-- update blog pages
+---
 
-![hashtag05](./pic/hashtag05.png)
+### Test, Commit, and Push
 
 ---
 
 ## AWS Architect
 
 ![arguswatcher_v0.3](./diagram/arguswatcher_v0.3.png)
+
+- Muti-AZ, three tiers website application
+  - AZ: us-east-1a, us-east-1b
+  - VPC: 1
+  - pulic subnets: 2, multi-az
+  - private subnets: 2, multi-az
 
 ---
 

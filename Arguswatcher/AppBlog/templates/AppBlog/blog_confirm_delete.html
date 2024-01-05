@@ -1,48 +1,50 @@
-{% extends "layout/base.html" %} {% block main %}
-<header class="pt-4">
-  <nav aria-label="breadcrumb">
-    <ol class="breadcrumb breadcrumb-chevron bg-body-tertiary pt-2">
-      <li class="breadcrumb-item">
-        <a class="link-body-emphasis" href="{% url 'AppBlog:blog_list' %}">
-          <i class="bi bi-journal-text"></i>
-        </a>
-      </li>
-      <li class="breadcrumb-item active" aria-current="page">{{heading}}</li>
-    </ol>
-  </nav>
-</header>
-<hr />
-<div class="row">
-  <div class="col-8">
-    <form method="POST">
-      {% csrf_token %}
-      <p class="lead">Are you sure you want to delete the following post?</p>
-      <!-- button -->
-      <div class="d-flex mt-4">
+{% extends "AppBlog/layout/AppBlog_base.html" %} {% block blog_page %}
+<div class="pb-5">
+  <form method="POST">
+    {% csrf_token %}
+    <p class="lead fw-bold pt-4">
+      Are you sure you want to delete the following post?
+    </p>
+    <!-- button -->
+    <div class="d-flex mt-4">
+      <a
+        class="btn btn-outline-secondary rounded-pill"
+        href="{% url 'AppBlog:blog_detail' pk=object.pk %}"
+      >
+        Cancel
+      </a>
+      <button class="btn btn-outline-danger rounded-pill ms-auto" type="submit">
+        Confirm Delete
+      </button>
+    </div>
+    <!-- article -->
+    <article id="article" class="pt-3">
+      <h2 class="link-body-emphasis pb-4 heading">{{blog.title}}</h2>
+      <p class="fw-normal text-body-secondary">
+        <span>
+          {{blog.created_at|date:'F d, Y G:i:s'}} by {{blog.author}}
+        </span>
+        {% if user.is_authenticated %} {% if blog.post_at %}
+        <small class="ms-3">Published<i class="bi bi-check-lg"></i></small>
+        {% else %}
         <a
-          class="btn btn-outline-secondary rounded-pill"
-          href="{% url 'AppBlog:blog_detail' pk=object.pk %}"
+          class="btn btn-success btn-sm ms-3"
+          href="{% url 'AppBlog:post_blog' pk=blog.pk %}"
         >
-          Cancel
+          Publish this post
         </a>
-        <button
-          class="btn btn-outline-danger rounded-pill ms-auto"
-          type="submit"
-        >
-          Confirm Delete
-        </button>
+        {% endif %} {% endif %}
+      </p>
+      <!-- display hashtags -->
+      {% if checked_tags %}
+      <div class="mb-2">
+        {% for tag in checked_tags %}
+        <small class="badge bg-success rounded-pill">{{ tag.name }}</small>
+        {% endfor %}
       </div>
-      <!-- article -->
-      <article id="article" class="pt-3">
-        <h2 class="link-body-emphasis pb-4 heading">{{blog.title}}</h2>
-        <p class="fw-normal text-body-secondary">
-          <span>
-            {{blog.created_at|date:'F d, Y G:i:s'}} by {{blog.author}}
-          </span>
-        </p>
-        <p>{{blog.content|safe|linebreaks}}</p>
-      </article>
-    </form>
-  </div>
+      {% endif %}
+      <p>{{blog.content|safe|linebreaks}}</p>
+    </article>
+  </form>
 </div>
 {% endblock %}

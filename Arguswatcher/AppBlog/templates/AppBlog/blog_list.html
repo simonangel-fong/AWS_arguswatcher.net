@@ -1,31 +1,25 @@
-{% extends "layout/base.html" %} {% block main %}
-<header class="pt-4">{% include "AppBlog/header.html" %}</header>
-<hr />
-<div class="container-fluid">
-  <div class="row">
-    <div class="col-md-4">{% include "AppBlog/sidebar.html" %}</div>
-    <div class="col-md-8">
-      {% for blog in blog_list %}
-      <!-- article -->
-      <article class="py-4">
-        <h3 class="link-body-emphasis">
-          <a href="{% url 'AppBlog:blog_detail' pk=blog.pk %}">
-            {{blog.title}}
-          </a>
-        </h3>
-        <p class="fw-normal text-body-secondary">
-          <span>
-            {{blog.created_at|date:'F-d, Y G:i:s'}} by {{blog.author}}
-          </span>
-        </p>
-
-        <p>{{blog.content|safe|linebreaks|truncatewords_html:48}}</p>
-      </article>
-      <hr />
-      {% empty %}
-      <p class="fs-4">No posted blog.</p>
+{% extends "AppBlog/layout/AppBlog_base.html" %} {% block blog_page %}
+<div class="pb-5">
+  {% for blog in blog_list %}
+  <!-- article -->
+  <article class="py-4">
+    <h3 class="link-body-emphasis">
+      <a href="{% url 'AppBlog:blog_detail' pk=blog.pk %}"> {{blog.title}} </a>
+    </h3>
+    <p class="fw-normal text-body-secondary">
+      <span> {{blog.created_at|date:'F-d, Y G:i:s'}} by {{blog.author}} </span>
+    </p>
+    <!-- hashtags -->
+    <div class="mb-2">
+      {% for hashtag in blog.hashtags.all %}
+      <small class="badge bg-success rounded-pill">{{ hashtag.name }}</small>
       {% endfor %}
     </div>
-  </div>
+    <p>{{blog.content|safe|linebreaks|truncatewords_html:48}}</p>
+  </article>
+  <hr />
+  {% empty %}
+  <p class="fs-4">No posted blog.</p>
+  {% endfor %}
 </div>
 {% endblock %}

@@ -6,7 +6,7 @@ from django.views.generic import (
 from django.contrib.auth.mixins import LoginRequiredMixin
 
 from .models import Blog, Hashtag
-from .forms import BlogForm, HashtagForm
+from .forms import BlogForm
 
 # region public view
 
@@ -47,13 +47,6 @@ class BlogListView(ListView):
         return context
 
 
-class HashtagListView(ListView):
-    model = Hashtag
-    template_name = "AppBlog/hashtag_list.html"
-    context_object_name = 'hashtags'
-    extra_context = {"title": "All Hashtag", "heading": "All Hashtag"}
-
-
 class BlogDetailView(DetailView):
     ''' Blog detail view '''
     model = Blog
@@ -65,11 +58,14 @@ class BlogDetailView(DetailView):
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
         context['hashtags'] = Hashtag.objects.all()
+        context['checked_tags'] = self.object.hashtags.filter(
+            blog=self.object)  # return the related tags
         return context
 
 
 # endregion
 
+# region LoginRequired
 
 class BlogCreateView(LoginRequiredMixin, CreateView):
     ''' Blog Create View '''
@@ -79,6 +75,11 @@ class BlogCreateView(LoginRequiredMixin, CreateView):
     success_url = reverse_lazy('AppBlog:draft_list')
     extra_context = {"heading": "New Blog",
                      "title": "New Blog"}  # context for render
+
+    def get_context_data(self, **kwargs):
+        context = super().get_context_data(**kwargs)
+        context['hashtags'] = Hashtag.objects.all()     # load hashtags
+        return context
 
     # When successfully validated
     def form_valid(self, form):
@@ -109,6 +110,13 @@ class BlogDeleteView(LoginRequiredMixin, DeleteView):
     extra_context = {"heading": "Blog Delete",
                      "title": "Blog Delete"}  # context for render
 
+    def get_context_data(self, **kwargs):
+        context = super().get_context_data(**kwargs)
+        context['hashtags'] = Hashtag.objects.all()
+        context['checked_tags'] = self.object.hashtags.filter(
+            blog=self.object)  # return the related tags
+        return context
+
 
 @login_required
 def post_blog(request, pk):
@@ -116,29 +124,6 @@ def post_blog(request, pk):
     post = get_object_or_404(Blog, pk=pk)
     post.post_draft()
     return redirect('AppBlog:blog_detail', pk=pk)
-
-
-class HashtagCreateView(LoginRequiredMixin, CreateView):
-    model = Hashtag
-    form_class = HashtagForm
-    extra_context = {"title": "New Hashtag", "heading": "New Hashtag"}
-    template_name = "AppBlog/hashtag_form.html"
-
-    # customizes process when form is valid.
-    def form_valid(self, form):
-        self.object = form.save(commit=False)   # gets the object from the form
-        # assigns the request user to user field
-        self.object.name = self.object.name.strip()  # strip the hashtag name
-        self.object.save()                      # saves the Blog object
-        return super().form_valid(form)         # calls the parent form_valid()
-
-    def get_context_data(self, **kwargs):
-        context = super().get_context_data(**kwargs)
-        context['hashtags'] = Hashtag.objects.all()
-        return context
-
-    def get_success_url(self):
-        return reverse_lazy('AppBlog:blog_list')
 
 
 def blog_by_hashtag(request, slug):
@@ -157,3 +142,5 @@ def blog_by_hashtag(request, slug):
     # print(context)
     template = "AppBlog/blog_list.html"
     return render(request, template, context)
+
+# endregion

@@ -1,0 +1,16 @@
+{% extends "layout/base.html" %} {% block main %}
+<div class="container-fluid">
+  <header class="pt-5">{% include "AppAccount/layout/header.html" %}</header>
+  <hr />
+  <div class="container-fluid">
+    <div class="row">
+      <div class="col-lg-3 col-md-12">
+        {% include "AppAccount/layout/sidebar.html" %}
+      </div>
+      <div class="col-lg-9 col-md-12">
+        {% block account_page %}{% endblock %}
+      </div>
+    </div>
+  </div>
+</div>
+{% endblock %}

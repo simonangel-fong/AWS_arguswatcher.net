@@ -11,3 +11,8 @@ class HomeView(TemplateView):
         # a dictionary representing the context
         context["msg"] = "hellow world"
         return context
+
+
+class TestView(TemplateView):
+    template_name = "AppAccount/test.html"
+    extra_context = {"heading": "Test"}
