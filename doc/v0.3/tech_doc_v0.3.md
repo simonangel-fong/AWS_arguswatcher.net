@@ -4,13 +4,18 @@
 
 - [ArgusWatcher - Document v0.3](#arguswatcher---document-v03)
 - [Requirements](#requirements)
+  - [Analysis of precious version](#analysis-of-precious-version)
   - [Current version](#current-version)
 - [Application Development - Blog management](#application-development---blog-management)
   - [Create app `AppBlog`](#create-app-appblog)
   - [Blog management](#blog-management)
   - [Hashtag](#hashtag)
-  - [Update profile page](#update-profile-page)
-  - [Test, Commit, and Push](#test-commit-and-push)
+  - [Update profile page and Home](#update-profile-page-and-home)
+  - [Commit, Push, and Test](#commit-push-and-test)
+- [AWS Deployment: CloudFormation](#aws-deployment-cloudformation)
+  - [Side Lab: CloudFormation Tutorial](#side-lab-cloudformation-tutorial)
+  - [Create VPC](#create-vpc)
+  - [Create Auto Scaling Group](#create-auto-scaling-group)
 - [AWS Architect](#aws-architect)
 - [Summary](#summary)
   - [Challenge and Lesson](#challenge-and-lesson)
@@ -19,6 +24,12 @@
 ---
 
 ## Requirements
+
+### Analysis of precious version
+
+| Problem                          | Solution       |
+| -------------------------------- | -------------- |
+| Time-consuming Manual Deployment | CloudFormation |
 
 ---
 
@@ -303,15 +314,359 @@ class Hashtag(models.Model):
 
 ---
 
-### Update profile page
+### Update profile page and Home
 
 - update profile page
 
 ![hashtag04](./pic/blog04.png)
 
+- update home page
+
 ---
 
-### Test, Commit, and Push
+### Commit, Push, and Test
+
+- Test on domain name
+
+![domain01](./pic/domain01.png)
+
+![domain02](./pic/domain02.png)
+
+---
+
+## AWS Deployment: CloudFormation
+
+### Side Lab: CloudFormation Tutorial
+
+- ref:
+  - https://catalog.workshops.aws/general-immersionday/en-US/basic-modules/800-cfn
+
+---
+
+### Create VPC
+
+- Create a template for VPC
+
+```yaml
+Resources:
+  # region VPC
+
+  # Create a VPC
+  MainVPC:
+    Type: AWS::EC2::VPC
+    Properties:
+      CidrBlock: 10.0.0.0/16
+      EnableDnsHostnames: "true"
+      EnableDnsSupport: "true"
+      Tags:
+        - Key: Name
+          Value: arguswatcherVPCCfn
+        - Key: project
+          Value: arguswatcher
+
+  # Create and attach InternetGateway
+  InternetGateway:
+    Type: AWS::EC2::InternetGateway
+    DependsOn: MainVPC
+    Properties:
+      Tags:
+        - Key: Name
+          Value: arguswatcherIGWCfn
+        - Key: project
+          Value: arguswatcher
+
+  # attach IGW
+  AttachIGW:
+    Type: AWS::EC2::VPCGatewayAttachment
+    Properties:
+      # reference VPC
+      VpcId: !Ref MainVPC
+      # reference IGW
+      InternetGatewayId: !Ref InternetGateway
+
+  # endregion
+
+  # region Subnets
+
+  # Create Subnet - Public EC 1a
+  PublicSubnetEC1a:
+    Type: AWS::EC2::Subnet
+    Properties:
+      VpcId: !Ref MainVPC
+      # mind overlap
+      CidrBlock: 10.0.10.0/24
+      AvailabilityZone: "us-east-1a"
+      # enable a public IPv4 address
+      MapPublicIpOnLaunch: true
+      Tags:
+        - Key: Name
+          Value: arguswatcherPublicSubnetEC1a
+        - Key: project
+          Value: arguswatcher
+
+  # Create Subnet - Public EC 1b
+  PublicSubnetEC1b:
+    Type: AWS::EC2::Subnet
+    Properties:
+      VpcId: !Ref MainVPC
+      # mind overlap
+      CidrBlock: 10.0.20.0/24
+      # multi-AZ
+      AvailabilityZone: "us-east-1b"
+      # enable a public IPv4 address
+      MapPublicIpOnLaunch: true
+      Tags:
+        - Key: Name
+          Value: arguswatcherPublicSubnetEC1b
+        - Key: project
+          Value: arguswatcher
+
+  # Create Subnet - Private DB 1a
+  PrivateSubnetDB1a:
+    Type: AWS::EC2::Subnet
+    Properties:
+      VpcId: !Ref MainVPC
+      # mind overlap
+      CidrBlock: 10.0.30.0/24
+      AvailabilityZone: "us-east-1a"
+      Tags:
+        - Key: Name
+          Value: arguswatcherPrivateSubnetDB1a
+        - Key: project
+          Value: arguswatcher
+
+  # Create Subnet - Private DB 1b
+  PrivateSubnetDB1b:
+    Type: AWS::EC2::Subnet
+    Properties:
+      VpcId: !Ref MainVPC
+      # mind overlap
+      CidrBlock: 10.0.40.0/24
+      # multi-AZ
+      AvailabilityZone: "us-east-1b"
+      Tags:
+        - Key: Name
+          Value: arguswatcherPrivateSubnetDB1b
+        - Key: project
+          Value: arguswatcher
+  # endregion
+
+  # region Route Table
+
+  # Create and Set Public Route Table
+  PublicRouteTable:
+    Type: AWS::EC2::RouteTable
+    Properties:
+      VpcId: !Ref MainVPC
+      Tags:
+        - Key: Name
+          Value: arguswatcherPublicRouteTable
+        - Key: project
+          Value: arguswatcher
+
+  # configure Route Table
+  PublicSubnetRoute:
+    Type: "AWS::EC2::Route"
+    DependsOn: AttachIGW
+    Properties:
+      RouteTableId: !Ref PublicRouteTable
+      DestinationCidrBlock: 0.0.0.0/0
+      GatewayId: !Ref InternetGateway
+  # endregion
+
+  # region Associate Public Subnets to Public Route Table
+  PublicSubnet1aRouteTableAssociation:
+    Type: "AWS::EC2::SubnetRouteTableAssociation"
+    Properties:
+      SubnetId: !Ref PublicSubnetEC1a
+      RouteTableId: !Ref PublicRouteTable
+
+  PublicSubnet2RouteTableAssociation:
+    Type: "AWS::EC2::SubnetRouteTableAssociation"
+    Properties:
+      SubnetId: !Ref PublicSubnetEC1b
+      RouteTableId: !Ref PublicRouteTable
+  # endregion
+
+  # region Security Groups
+
+  # Create Security Group for HTTP
+  HttpSecurityGroup:
+    Type: AWS::EC2::SecurityGroup
+    Properties:
+      GroupDescription: Allow traffic of HTTP
+      VpcId: !Ref MainVPC
+      SecurityGroupIngress:
+        - IpProtocol: tcp
+          FromPort: 80
+          ToPort: 80
+          CidrIp: 0.0.0.0/0 # Allow incoming traffic from any IP for HTTP
+      Tags:
+        - Key: Name
+          Value: arguswatcherSGHttp
+        - Key: project
+          Value: arguswatcher
+
+  # Create Security Group for SSH
+  SshSecurityGroup:
+    Type: AWS::EC2::SecurityGroup
+    Properties:
+      GroupDescription: Security group for SSH traffic
+      VpcId: !Ref MainVPC
+      SecurityGroupIngress:
+        - IpProtocol: tcp
+          FromPort: 22
+          ToPort: 22
+          CidrIp: 0.0.0.0/0 # Allow incoming traffic from any IP for SSH
+      Tags:
+        - Key: Name
+          Value: arguswatcherSGSSH
+        - Key: project
+          Value: arguswatcher
+
+  # endregion
+```
+
+- Upload template
+
+![cfn01](./pic/cfn01.png)
+
+![cfn02](./pic/cfn02.png)
+
+---
+
+- Create a template for ASG
+
+```yaml
+# region EC2 ASG
+
+# EC2 instance launch configuration
+ServerLaunchConf:
+  Type: AWS::AutoScaling::LaunchConfiguration
+  Properties:
+    ImageId: ami-0261755bbcb8c4a84 # Linux Ubuntu
+    InstanceType: t2.micro # free tier
+    KeyName: Argus_Lab #  key pair
+    SecurityGroups:
+      - !Ref HttpSecurityGroup # Reference SG http
+      - !Ref SshSecurityGroup # Reference SG SSH
+    # update userdata from version 0.2
+    UserData:
+      Fn::Base64: !Sub |
+        #!/bin/bash
+        touch /home/ubuntu/userdata_log
+
+        ###########################################################
+        ## Install CodeDeploy
+        ###########################################################
+
+        # update the package on Linux system.
+        sudo apt-get -y update &&
+          echo "$(date +'%Y-%m-%d %R'): update os packages." >>/home/ubuntu/userdata_log ||
+          echo "$(date +'%Y-%m-%d %R'): Fail: update os packages." >>/home/ubuntu/userdata_log
+
+        # upgrade the package on Linux system.
+        DEBIAN_FRONTEND=noninteractive apt-get -y upgrade &&
+          echo "$(date +'%Y-%m-%d %R'): upgrade os packages." >>/home/ubuntu/userdata_log ||
+          echo "$(date +'%Y-%m-%d %R'): Fail: upgrade os packages." >>/home/ubuntu/userdata_log
+
+        # install ruby-full package
+        sudo apt install -y ruby-full &&
+          echo "$(date +'%Y-%m-%d %R'): install ruby-full package." >>/home/ubuntu/userdata_log ||
+          echo "$(date +'%Y-%m-%d %R'): Fail: install ruby-full package." >>/home/ubuntu/userdata_log
+
+        # install wget utility
+        sudo apt install -y wget &&
+          echo "$(date +'%Y-%m-%d %R'): install wget utility." >>/home/ubuntu/userdata_log ||
+          echo "$(date +'%Y-%m-%d %R'): Fail: install wget utility." >>/home/ubuntu/userdata_log
+
+        # download codedeploy on the EC2
+        sudo wget https://aws-codedeploy-us-east-1.s3.amazonaws.com/latest/install &&
+          echo "$(date +'%Y-%m-%d %R'): download codedeploy." >>/home/ubuntu/userdata_log ||
+          echo "$(date +'%Y-%m-%d %R'): Fail: download codedeploy." >>/home/ubuntu/userdata_log
+
+        # change permission of the install file
+        sudo chmod +x ./install &&
+          echo "$(date +'%Y-%m-%d %R'): change permission." >>/home/ubuntu/userdata_log ||
+          echo "$(date +'%Y-%m-%d %R'): Fail: change permission." >>/home/ubuntu/userdata_log
+
+        # install and log the output to the tmp/logfile.file
+        sudo ./install auto >/tmp/logfile &&
+          echo "$(date +'%Y-%m-%d %R'): install and log the output." >>/home/ubuntu/userdata_log ||
+          echo "$(date +'%Y-%m-%d %R'): Fail: install and log the output." >>/home/ubuntu/userdata_log
+
+        ###########################################################
+        ## Create env file
+        ###########################################################
+        # create env file for django project
+        sudo bash -c "cat >/home/ubuntu/.env <<ENV_FILE
+        DEBUG=False
+        SECRET_KEY='SECRET_KEY'
+        DATABASE='DATABASE'
+        HOST='HOST'
+        USER='USER'
+        PASSWORD='PASSWORD'
+        ENV_FILE" &&
+          echo "$(date +'%Y-%m-%d %R'): create env file." >>/home/ubuntu/userdata_log ||
+          echo "$(date +'%Y-%m-%d %R'): Fail: create env file." >>/home/ubuntu/userdata_log
+
+        ###########################################################
+        ## install mysql package
+        ###########################################################
+        sudo apt install -y mysql-client &&
+          echo "$(date +'%Y-%m-%d %R'): install mysql package." >>/home/ubuntu/userdata_log ||
+          echo "$(date +'%Y-%m-%d %R'): Fail: install mysql package." >>/home/ubuntu/userdata_log
+
+# create asg
+AutoScalingGroup:
+  Type: AWS::AutoScaling::AutoScalingGroup
+  Properties:
+    AvailabilityZones:
+      - us-east-1a
+      - us-east-1b
+    # The name of the launch configuration to use to launch instances.
+    LaunchConfigurationName: !Ref ServerLaunchConf
+    MinSize: 2 # The minimum size of the group.
+    MaxSize: 4 # The maximum size of the group.
+    DesiredCapacity: 2
+    VPCZoneIdentifier:
+      - !Ref PublicSubnetEC1a # 1a subnet
+      - !Ref PublicSubnetEC1b # 1a subnet
+    # this is no the tags for asg, but for all the instance managed by asg
+    Tags:
+      - Key: Name
+        Value: arguswatcherServer
+        PropagateAtLaunch: true
+      - Key: project
+        Value: arguswatcher
+        PropagateAtLaunch: true
+
+ScalingPolicy:
+  Type: AWS::AutoScaling::ScalingPolicy
+  Properties:
+    AdjustmentType: ChangeInCapacity
+    AutoScalingGroupName: !Ref AutoScalingGroup
+    Cooldown: 300
+    ScalingAdjustment: 1
+# endregion
+```
+
+---
+
+### Create Auto Scaling Group
+
+- Ref:
+
+  - https://docs.aws.amazon.com/AWSCloudFormation/latest/UserGuide/aws-resource-autoscaling-launchconfiguration.html#cfn-autoscaling-launchconfiguration-securitygroups
+
+- Update stack
+  - 2 instances within 2 different subnet
+
+![cfn03](./pic/cfn03.png)
+
+![cfn04](./pic/cfn04.png)
+
+---
 
 ---
 

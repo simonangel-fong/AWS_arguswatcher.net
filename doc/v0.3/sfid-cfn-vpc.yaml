@@ -1,0 +1,101 @@
+Description: Introduction to CloudFormation SFID - Virtual Private Cloud (VPC)
+Resources:
+  # Create a VPC
+  MainVPC:
+    Type: AWS::EC2::VPC
+    Properties:
+      CidrBlock: 10.0.0.0/16
+      EnableDnsHostnames: "true"
+      EnableDnsSupport: "true"
+      Tags:
+        - Key: Name
+          Value: VPC for SFID CFN
+
+  # Create and attach InternetGateway
+  InternetGateway:
+    Type: AWS::EC2::InternetGateway
+    DependsOn: MainVPC
+
+  # attach IGW
+  AttachIGW:
+    Type: AWS::EC2::VPCGatewayAttachment
+    Properties:
+      # reference VPC
+      VpcId: !Ref MainVPC
+      # reference IGW
+      InternetGatewayId: !Ref InternetGateway
+
+  # Create First Subnet
+  FirstSubnet:
+    Type: AWS::EC2::Subnet
+    Properties:
+      VpcId: !Ref MainVPC
+      CidrBlock: 10.0.10.0/24
+      AvailabilityZone: "us-east-1a"
+      Tags:
+        - Key: Name
+          Value: Public Subnet A - SFID
+
+  # Creating additional subnet
+  SecondSubnet:
+    Type: AWS::EC2::Subnet
+    Properties:
+      VpcId: !Ref MainVPC
+      CidrBlock: 10.0.20.0/24
+      AvailabilityZone: "us-east-1b"
+      Tags:
+        - Key: Name
+          Value: Public Subnet B - SFID
+
+  # Create and Set Public Route Table
+  PublicRouteTable:
+    Type: AWS::EC2::RouteTable
+    Properties:
+      VpcId: !Ref MainVPC
+      Tags:
+        - Key: Name
+          Value: Public Route Table
+
+  PublicRoute:
+    Type: "AWS::EC2::Route"
+    DependsOn: AttachIGW
+    Properties:
+      RouteTableId: !Ref PublicRouteTable
+      DestinationCidrBlock: 0.0.0.0/0
+      GatewayId: !Ref InternetGateway
+
+  # Associate Public Subnets to Public Route Table
+  PublicSubnet1RouteTableAssociation:
+    Type: "AWS::EC2::SubnetRouteTableAssociation"
+    Properties:
+      SubnetId: !Ref FirstSubnet
+      RouteTableId: !Ref PublicRouteTable
+
+  PublicSubnet2RouteTableAssociation:
+    Type: "AWS::EC2::SubnetRouteTableAssociation"
+    Properties:
+      SubnetId: !Ref SecondSubnet
+      RouteTableId: !Ref PublicRouteTable
+
+  # Create Security Group for the following:
+  MainSecurityGroup:
+    Type: AWS::EC2::SecurityGroup
+    Properties:
+      GroupDescription: Security Group for Web Server
+      VpcId: !Ref MainVPC
+      SecurityGroupIngress:
+        - IpProtocol: tcp
+          FromPort: 80
+          ToPort: 80
+          CidrIp: 0.0.0.0/0
+      Tags:
+        - Key: Name
+          Value: Web Server Security Group - SFID
+Outputs:
+  MainSubnet:
+    Value: !Ref FirstSubnet
+    Description: Public Subnet ID with Direct Internet Route
+
+  MainSecurityGroup:
+    Value: !Ref MainSecurityGroup
+    Description: Security Group ID for the Web Server
