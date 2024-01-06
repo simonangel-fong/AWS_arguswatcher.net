@@ -1,13 +1,13 @@
 {% extends "layout/base.html" %} {% block main %} {% load static %}
-<div class="container-fluid pb-4">
+<div class="container-fluid px-4 pb-4">
   <header class="pt-5">{% include "AppAccount/layout/header.html" %}</header>
   <hr />
-  <div class="container-fluid">
+  <div class="container-fluid px-5">
     <div class="row">
       <!-- png -->
-      <div class="col-lg-7 col-md-8 col-sm-12">
+      <div class="col-lg-8 col-md-8 col-sm-12">
         <img
-          src="{% static 'img/AppAccount/login.jpg' %}"
+          src="{% static 'img/AppAccount/login_01.jpg' %}"
           class="d-block mx-lg-auto img-fluid"
           alt="Bootstrap Themes"
           width="700"
@@ -16,7 +16,7 @@
         />
       </div>
       <!-- login -->
-      <div class="col-lg-3 col-md-4 col-sm-12 pt-4 mx-auto">
+      <div class="col-lg-4 col-md-4 col-sm-12 pt-4 mx-auto">
         {% if form.errors %} {% endif %} {% load django_bootstrap5 %}
         <form method="post">
           {% csrf_token %} {% bootstrap_form form %}
