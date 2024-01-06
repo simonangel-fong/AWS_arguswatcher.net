@@ -36,7 +36,7 @@ A Django-based blog platform showcasing web development proficiency. Users can s
 
 - Using [draw.io](https://draw.io/)
 
-![diagram](./doc/v0.2/diagram/arguswatcher_v0.2.png)
+![diagram](./doc/v1.0/diagram/arguswatcher_v1.0.png)
 
 ---
 
@@ -44,7 +44,7 @@ A Django-based blog platform showcasing web development proficiency. Users can s
 
 - [Document V0.1](./doc/v0.1/tech_doc_v0.1.md)
 - [Document V0.2](./doc/v0.2/tech_doc_v0.2.md)
-- [Document V1.0](./doc/v0.3/tech_doc_v1.0.md)
+- [Document V1.0](./doc/v1.0/tech_doc_v1.0.md)
 
 ---
 
