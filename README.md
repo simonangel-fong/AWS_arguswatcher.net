@@ -27,6 +27,8 @@ A Django-based blog platform showcasing web development proficiency. Users can s
   - EC2
   - VPC
   - RDS
+  - CloudFormation
+  - CodePipeline, CodeBuild, CodeDeploy
 
 ---
 
@@ -42,7 +44,7 @@ A Django-based blog platform showcasing web development proficiency. Users can s
 
 - [Document V0.1](./doc/v0.1/tech_doc_v0.1.md)
 - [Document V0.2](./doc/v0.2/tech_doc_v0.2.md)
-- [Document V0.3](./doc/v0.3/tech_doc_v0.3.md)
+- [Document V1.0](./doc/v0.3/tech_doc_v1.0.md)
 
 ---
 
