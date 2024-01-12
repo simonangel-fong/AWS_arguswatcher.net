@@ -1,0 +1,355 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>Wenhao Fang - Resume</title>
+    <!-- Bootstrap CSS link -->
+    <link
+      href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css"
+      rel="stylesheet"
+      integrity="sha384-T3c6CoIi6uLrA9TneNEoa7RxnatzjcDSCmG1MXxSR1GAsXEV/Dwwykc2MPK8M2HN"
+      crossorigin="anonymous"
+    />
+    <!-- google font -->
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link
+      href="https://fonts.googleapis.com/css2?family=Noto+Sans&display=swap"
+      rel="stylesheet"
+    />
+    <!-- icon -->
+    <link
+      rel="stylesheet"
+      href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.min.css"
+    />
+    <style>
+      .resume-body {
+        /* font */
+        font-family: "Noto Sans", sans-serif;
+        width: 21cm;
+        height: 29.7cm;
+        font-size: 13px;
+        border-style: dashed;
+        border-width: 0.5px;
+        border-color: #292b2c;
+        background-color: #f7f7f7;
+      }
+
+      .resume-banner {
+        width: 100px;
+        height: 12px;
+        transform: skew(-30deg);
+      }
+      .resume-logo {
+        height: 250px;
+        background-color: aquamarine;
+      }
+
+      ul {
+        list-style: none;
+      }
+
+      ul li::before {
+        content: "\2022";
+        color: #f0ad4e;
+        font-weight: bold;
+        display: inline-block;
+        width: 1em;
+        margin-left: 0;
+      }
+    </style>
+  </head>
+  <body class="bg-light">
+    <div class="resume-body p-4 m-auto">
+      <!-- navbar -->
+      <header class="container py-3 my-3">
+        <div class="row mx-4">
+          <!-- name and role -->
+          <div class="col-8">
+            <!-- banner -->
+            <div class="col-12 resume-banner bg-warning"></div>
+            <div class="fs-3">WENHAO</div>
+            <div class="fs-3 fw-bolder">FANG</div>
+            <div class="fs-6 text-secondary fw-semibold">
+              TARGET POSITION: CLOUD ENGINEER
+            </div>
+          </div>
+          <!-- contact info -->
+          <div class="col-4">
+            <div class="resume-contact">
+              <!-- address -->
+              <address>
+                <span class="text-warning">
+                  <i class="bi bi-geo-alt-fill"></i>
+                </span>
+                250 Humber College Blvd., <br />
+                Toronto, ON M5A 3JL7
+              </address>
+              <!-- email -->
+              <address>
+                <span class="text-warning">
+                  <i class="bi bi-envelope-at-fill"></i>
+                </span>
+                <a href="mailto: simonangelfong@gmail.com">
+                  simonangelfong@gmail.com
+                </a>
+              </address>
+            </div>
+          </div>
+        </div>
+      </header>
+      <!-- main -->
+      <main class="container py-3 my-3">
+        <div class="row g mx-4">
+          <!-- left -->
+          <div class="col-4">
+            <!-- banner -->
+            <div class="resume-banner bg-warning"></div>
+
+            <!-- social media -->
+            <section class="card bg-light py-3 border border-0">
+              <h5 class="card-title fw-bold">SOCIAL MEDIA</h5>
+              <div class="card-text">
+                <!-- website -->
+                <address>
+                  <span class="text-warning me-1">
+                    <i class="bi bi-globe"></i>
+                  </span>
+                  <a href="http://www.arguswatcher.net"> Personal Homepage </a>
+                </address>
+
+                <!-- github -->
+                <address>
+                  <span class="text-warning me-1">
+                    <i class="bi bi-github"></i>
+                  </span>
+                  <a href="https://github.com/simonangel-fong"> GitHub </a>
+                </address>
+
+                <!-- linkedin -->
+                <address>
+                  <span class="text-warning me-1">
+                    <i class="bi bi-linkedin"></i>
+                  </span>
+                  <a href="https://www.linkedin.com/in/wenhaofang">
+                    Linkedin
+                  </a>
+                </address>
+
+                <!-- medium -->
+                <address>
+                  <span class="text-warning me-1">
+                    <i class="bi bi-medium"></i>
+                  </span>
+                  <a href="https://medium.com/@simonangelfong"> Medium </a>
+                </address>
+              </div>
+            </section>
+
+            <!-- eduction section -->
+            <section class="card bg-light py-3 border border-0">
+              <h5 class="card-title fw-bold">EDUCATION</h5>
+              <div class="card-text">
+                <div class="fw-bold">Humber College</div>
+                <div>
+                  <em>
+                    Postgraduate Diploma, Information Technology Solutions
+                    Program
+                  </em>
+                  <br />
+                  <b> GPA: 93.4 </b><br />
+                  <b> Awards: Dean’s Honors List </b>
+                </div>
+              </div>
+            </section>
+
+            <hr />
+
+            <!-- skills -->
+            <section class="card bg-light py-3 border border-0">
+              <h5 class="card-title fw-bold">SKILLS</h5>
+              <div class="card-text">
+                <ul class="list-unstyled mb-0">
+                  <li class="py-1">
+                    Languages: <b>Python</b> , <b>JavaScript</b>
+                  </li>
+                  <li class="py-1">Front-End: <b>Bootstrap</b></li>
+                  <li class="py-1">Back-End: <b>Django</b></li>
+                  <li class="py-1">
+                    Cloud skill: <b>Boto3</b> , <b>CloudFormation</b>
+                  </li>
+                  <li class="py-1">
+                    Toolchain: <b>Git</b> , <b>Bash Scripting</b>
+                  </li>
+                </ul>
+              </div>
+            </section>
+          </div>
+
+          <!-- right col -->
+          <div class="col-8">
+            <!-- cert section -->
+            <section class="card bg-light py-3 border border-0">
+              <h5 class="card-title fw-bold">CERTIFICASTIONS</h5>
+              <div class="card-text">
+                <ul class="list-unstyled mb-0">
+                  <li class="d-flex py-1">
+                    <div class="ms-2 me-auto">
+                      <a
+                        class="fst-italic"
+                        href="https://www.credly.com/badges/82742394-93db-41f9-818e-e275725002ae"
+                      >
+                        AWS Certified Cloud Practitioner
+                      </a>
+                    </div>
+                    <span>Achieved May 2023</span>
+                  </li>
+                  <li class="d-flex py-1">
+                    <div class="ms-2 me-auto">
+                      <a
+                        class="fst-italic"
+                        href="https://www.credly.com/badges/a8cc3987-0eac-4392-9e03-bb921e63365d"
+                      >
+                        AWS Certified Solutions Architect Associate
+                      </a>
+                    </div>
+                    <span>Achieved Dec 2023</span>
+                  </li>
+                </ul>
+              </div>
+            </section>
+
+            <hr class="my-4" />
+
+            <!-- projects -->
+            <section class="card bg-light py-3 border border-0">
+              <h5 class="card-title fw-bold">TECHNICAL PROJECTS</h5>
+              <div class="card-text">
+                <!-- iOS -->
+                <div class="py-3">
+                  <div class="d-flex">
+                    <div class="fs-6 fw-bold me-auto">Mars Photos</div>
+                    <span>2023.11-12</span>
+                  </div>
+                  <ul class="list-unstyled mb-0">
+                    <li>
+                      Designed and developed an iOS app to present Martian
+                      photos using <b>NASAAPI</b>.
+                    </li>
+                    <li>
+                      Project Github:
+                      <a
+                        href="https://github.com/simonangel-fong/Humber_iOS01_Assignment04"
+                        >Mars Photos</a
+                      >
+                    </li>
+                    <li>
+                      Demo Video:
+                      <a href="https://www.youtube.com/watch?v=x24LYFmv6w8&t=2s"
+                        >Video</a
+                      >
+                    </li>
+                  </ul>
+                </div>
+
+                <!-- EC Django Deploy -->
+                <div class="py-3">
+                  <div class="d-flex">
+                    <div class="fs-6 fw-bold me-auto">EC Django Deploy</div>
+                    <span>2023.09-10</span>
+                  </div>
+                  <ul class="list-unstyled mb-0">
+                    <li>
+                      Designed and developed a web application providing Django
+                      app deployment services, using frameworks of
+                      <b>Django</b> and <b>Bootstrap</b> .
+                    </li>
+                    <li>
+                      Deployed web application on AWS <b>EC2</b> service with
+                      <u>user data</u> script.
+                    </li>
+
+                    <li>
+                      Implemented CICD pipelines for seamless updates using
+                      <b>CodePipeline</b>, <b>CodeBuild</b> , and
+                      <b>CodeDeploy</b> .
+                    </li>
+                    <li>
+                      Leveraged <b>AWS SDK Boto3</b> to provision AWS
+                      infrastructures to host any Django application.
+                    </li>
+                    <li>
+                      Project Github:
+                      <a
+                        href="https://github.com/simonangel-fong/AWS_EC2_ECDjangoDeploy"
+                        >AWS_EC2_ECDjangoDeploy</a
+                      >
+                    </li>
+                    <!-- <li>
+                    Demo Video:
+                    <a href="https://www.youtube.com/watch?v=x24LYFmv6w8&t=2s"
+                      >Video</a
+                    >
+                  </li> -->
+                  </ul>
+                </div>
+
+                <!-- blog -->
+                <div class="py-3">
+                  <div class="d-flex">
+                    <div class="fs-6 fw-bold me-auto">
+                      Blog Portfolio Web App
+                    </div>
+                    <span>2023.11 - 2024.01</span>
+                  </div>
+                  <ul class="list-unstyled mb-0">
+                    <li>
+                      Designed a robust blog app using <b>Django</b> and
+                      <b>Bootstrap</b> .
+                    </li>
+                    <li>
+                      Deployed app using
+                      <b>AWS EC2, RDS, and Route53</b>.
+                    </li>
+                    <li>
+                      Implemented CICD pipelines for seamless updates using
+                      <b>CodePipeline</b>, <b>CodeBuild</b> , and
+                      <b>CodeDeploy</b> .
+                    </li>
+                    <li>
+                      Project Github:
+                      <a
+                        href="https://github.com/simonangel-fong/AWS_arguswatcher_net"
+                      >
+                        AWS_arguswatcher_net
+                      </a>
+                    </li>
+                    <li>
+                      Portfolio Website:
+                      <a href="http://www.arguswatcher.net">
+                        Arguswatcher.net
+                      </a>
+                    </li>
+                    <li>
+                      <a
+                        href="https://medium.com/@simonangelfong/building-a-django-blog-application-part-1-1627ed2839e8"
+                        >Medium Blog</a
+                      >
+                    </li>
+                  </ul>
+                </div>
+              </div>
+            </section>
+          </div>
+        </div>
+      </main>
+    </div>
+    <!-- Bootstrap JS -->
+    <script
+      src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.bundle.min.js"
+      integrity="sha384-C6RzsynM9kWDrMNeT87bh95OGNyZPhcTNXj1NW7RuBCsyN/o0jlpcV8Qyq46cDfL"
+      crossorigin="anonymous"
+    ></script>
+  </body>
+</html>
