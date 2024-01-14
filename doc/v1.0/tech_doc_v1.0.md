@@ -399,7 +399,7 @@ class Hashtag(models.Model):
 
 ## AWS Architect
 
-![arguswatcher_v0.3](./diagram/arguswatcher_v0.3.png)
+![arguswatcher](./diagram/arguswatcher_v1.0.png)
 
 - Muti-AZ, three tiers website application
   - AZ: us-east-1a, us-east-1b

@@ -1,0 +1,128 @@
+{% extends "layout/base.html" %} {% block main %} {% load static %}
+
+<header class="container-fluid text-center pb-5" style="padding-top: 100px">
+  <img
+    class="d-block mx-auto mb-4"
+    src="{% static 'img/DjangoECDeployer/django-logo.png' %}"
+    alt=""
+    width="200px"
+  />
+  <h1 class="display-5 fw-bold text-body-emphasis py-4">Django ECDeployer</h1>
+  <hr class="col-3 py-3 mx-auto" />
+  <div class="col-lg-8 px-4 mx-auto">
+    <p class="lead mb-4">
+      <u>Django ECDeployer</u> is a streamlined solution designed to simplify
+      the deployment process of Django applications on AWS EC2 instances. Ideal
+      for developers looking to deploy Django applications on AWS without the
+      complexities of manual setup.
+    </p>
+  </div>
+  <div class="d-grid gap-2 d-sm-flex justify-content-sm-center">
+    <a
+      class="btn btn-primary btn-lg px-4 gap-3"
+      href="https://github.com/simonangel-fong/AWS_DjangoECDeployer"
+      target="_blank"
+    >
+      <i class="bi bi-github"></i> Project GitHub
+    </a>
+  </div>
+</header>
+
+<!-- video -->
+<section class="container-fluid text-center py-5">
+  <h1 class="fw-bold text-body-emphasis">Demo Video</h1>
+  <hr class="col-3 py-3 mx-auto" />
+  <div class="col-lg-10 col-sm-12 px-4 mx-auto">
+    <div class="ratio ratio-16x9">
+      <iframe
+        width="560"
+        height="315"
+        src="https://www.youtube.com/embed/-J_D7dRdriU?si=Rl3Evix22YD9axH8"
+        title="YouTube video player"
+        frameborder="0"
+        allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share"
+        allowfullscreen
+      ></iframe>
+    </div>
+  </div>
+</section>
+
+<!-- features -->
+<section class="container-fluid text-center py-5">
+  <h1 class="fw-bold text-body-emphasis">Features</h1>
+  <hr class="col-3 py-3 mx-auto" />
+  <div class="row g-4 px-3 row-cols-lg-3 row-cols-md-3 row-cols-1">
+    <!-- simplify -->
+    <div class="col">
+      <div
+        class="d-inline-flex align-items-center justify-content-center text-bg-secondary bg-gradient fs-2 mb-3"
+      >
+        <i
+          class="bi bi-gear-wide-connected"
+          style="width: 1em; height: 1em"
+        ></i>
+      </div>
+      <h4 class="fs-3 text-body-emphasis">Simplified Deployment</h4>
+      <p>
+        To simplify the Django project deployment, users are required to provide
+        only two key arguments - <b>the name of the Django project</b> and
+        <b>the GitHub repository URL</b>.
+      </p>
+    </div>
+
+    <!-- Cloud -->
+    <div class="feature col">
+      <div
+        class="feature-icon d-inline-flex align-items-center justify-content-center text-bg-secondary bg-gradient fs-2 mb-3"
+      >
+        <i
+          class="bi bi-cloud-arrow-up-fill"
+          style="width: 1em; height: 1em"
+        ></i>
+      </div>
+      <h3 class="fs-3 text-body-emphasis">AWS Cloud</h3>
+      <p>
+        Utilizes a predefined <b>EC2 launch template with user data</b> to host
+        the Django application. <br />
+        Leverages <b>AWS SDK boto3</b> to provision infractures.
+      </p>
+    </div>
+
+    <!-- CICD -->
+    <div class="feature col">
+      <div
+        class="feature-icon d-inline-flex align-items-center justify-content-center text-bg-secondary bg-gradient fs-2 mb-3"
+      >
+        <i class="bi bi-sliders" style="width: 1em; height: 1em"></i>
+      </div>
+      <h4 class="fs-3 text-body-emphasis">CI/CD</h4>
+      <p>
+        This project uses <b>AWS CodeBuild, CodePipeline, and CodeDeploy</b>
+        Integration. Automates the entire deployment pipeline, from source code
+        changes to EC2 instance provisioning and application deployment.
+      </p>
+    </div>
+  </div>
+</section>
+
+<!-- diagram -->
+<section class="container-fluid text-center py-5">
+  <h1 class="fw-bold text-body-emphasis">AWS Diagram</h1>
+  <hr class="col-3 py-3 mx-auto" />
+
+  <div class="row g-4 px-3 row-cols-lg-3 row-cols-1">
+    <picture class="w-auto mx-auto">
+      <source
+        srcset="{% static 'img/DjangoECDeployer/diagram.png' %}"
+        type="image/svg+xml"
+      />
+      <img
+        src="{% static 'img/DjangoECDeployer/diagram.png' %}"
+        class="img-fluid img-thumbnail"
+        alt="diagram"
+      />
+    </picture>
+  </div>
+</section>
+
+{% endblock %}
