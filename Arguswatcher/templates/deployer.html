@@ -7,7 +7,7 @@
     alt=""
     width="200px"
   />
-  <h1 class="display-5 fw-bold text-body-emphasis py-4">Django ECDeployer</h1>
+  <h1 class="display-5 fw-bold text-uppercase py-4">Django ECDeployer</h1>
   <hr class="col-3 py-3 mx-auto" />
   <div class="col-lg-8 px-4 mx-auto">
     <p class="lead mb-4">
@@ -28,28 +28,9 @@
   </div>
 </header>
 
-<!-- video -->
-<section class="container-fluid text-center py-5">
-  <h1 class="fw-bold text-body-emphasis">Demo Video</h1>
-  <hr class="col-3 py-3 mx-auto" />
-  <div class="col-lg-10 col-sm-12 px-4 mx-auto">
-    <div class="ratio ratio-16x9">
-      <iframe
-        width="560"
-        height="315"
-        src="https://www.youtube.com/embed/-J_D7dRdriU?si=Rl3Evix22YD9axH8"
-        title="YouTube video player"
-        frameborder="0"
-        allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share"
-        allowfullscreen
-      ></iframe>
-    </div>
-  </div>
-</section>
-
 <!-- features -->
 <section class="container-fluid text-center py-5">
-  <h1 class="fw-bold text-body-emphasis">Features</h1>
+  <h1 class="fw-bold text-uppercase text-body-emphasis">Features</h1>
   <hr class="col-3 py-3 mx-auto" />
   <div class="row g-4 px-3 row-cols-lg-3 row-cols-md-3 row-cols-1">
     <!-- simplify -->
@@ -105,9 +86,140 @@
   </div>
 </section>
 
+<!-- video -->
+<section class="container-fluid text-center py-5">
+  <h1 class="fw-bold text-uppercase text-body-emphasis">Demo Video</h1>
+  <hr class="col-3 py-3 mx-auto" />
+  <div class="col-lg-10 col-sm-12 px-4 mx-auto">
+    <div class="ratio ratio-16x9">
+      <iframe
+        width="560"
+        height="315"
+        src="https://www.youtube.com/embed/-J_D7dRdriU?si=Rl3Evix22YD9axH8"
+        title="YouTube video player"
+        frameborder="0"
+        allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share"
+        allowfullscreen
+      ></iframe>
+    </div>
+  </div>
+</section>
+
+<!-- uasge -->
+<section class="container-fluid text-center py-5">
+  <h1 class="fw-bold text-uppercase text-body-emphasis">Usage</h1>
+  <hr class="col-3 py-3 mx-auto" />
+  <div class="row g-4 px-3 row-cols-lg-3 row-cols-1 py-5">
+    <div class="lead col-lg-12">Fill the form to create a server</div>
+    <picture class="col-sm-12 col-md-10 col-lg-10 mx-auto">
+      <source
+        srcset="{% static 'img/DjangoECDeployer/create01.png' %}"
+        type="image/svg+xml"
+      />
+      <img
+        src="{% static 'img/DjangoECDeployer/create01.png' %}"
+        class="img-fluid img-thumbnail"
+        alt="diagram"
+      />
+    </picture>
+  </div>
+
+  <div class="row g-4 px-3 row-cols-lg-3 row-cols-1 py-5">
+    <div class="lead col-lg-12">List all running servers in a table</div>
+    <picture class="col-sm-12 col-md-10 col-lg-10 mx-auto">
+      <source
+        srcset="{% static 'img/DjangoECDeployer/create04.png' %}"
+        type="image/svg+xml"
+      />
+      <img
+        src="{% static 'img/DjangoECDeployer/create04.png' %}"
+        class="img-fluid img-thumbnail"
+        alt="diagram"
+      />
+    </picture>
+  </div>
+
+  <div class="row g-4 px-3 row-cols-lg-3 row-cols-1 py-5">
+    <div class="lead col-lg-12">View server information in detail page</div>
+    <picture class="col-sm-12 col-md-10 col-lg-10 mx-auto">
+      <source
+        srcset="{% static 'img/DjangoECDeployer/create02.png' %}"
+        type="image/svg+xml"
+      />
+      <img
+        src="{% static 'img/DjangoECDeployer/create02.png' %}"
+        class="img-fluid img-thumbnail"
+        alt="diagram"
+      />
+    </picture>
+  </div>
+
+  <div class="row g-4 px-3 row-cols-lg-3 row-cols-1 py-5">
+    <div class="lead col-lg-12">Visit your Django project via public IP</div>
+    <picture class="col-sm-12 col-md-10 col-lg-10 mx-auto">
+      <source
+        srcset="{% static 'img/DjangoECDeployer/create03.png' %}"
+        type="image/svg+xml"
+      />
+      <img
+        src="{% static 'img/DjangoECDeployer/create03.png' %}"
+        class="img-fluid img-thumbnail"
+        alt="diagram"
+      />
+    </picture>
+  </div>
+
+  <div class="row g-4 px-3 row-cols-lg-3 row-cols-1 py-5">
+    <div class="lead col-lg-12">
+      Click "Terminate" button to terminate server
+    </div>
+    <picture class="col-sm-12 col-md-10 col-lg-10 mx-auto">
+      <source
+        srcset="{% static 'img/DjangoECDeployer/terminate01.png' %}"
+        type="image/svg+xml"
+      />
+      <img
+        src="{% static 'img/DjangoECDeployer/terminate01.png' %}"
+        class="img-fluid img-thumbnail"
+        alt="diagram"
+      />
+    </picture>
+  </div>
+
+  <div class="row g-4 px-3 row-cols-lg-3 row-cols-1 py-5">
+    <div class="lead col-lg-12">Confirm termination</div>
+    <picture class="col-sm-12 col-md-10 col-lg-10 mx-auto">
+      <source
+        srcset="{% static 'img/DjangoECDeployer/terminate02.png' %}"
+        type="image/svg+xml"
+      />
+      <img
+        src="{% static 'img/DjangoECDeployer/terminate02.png' %}"
+        class="img-fluid img-thumbnail"
+        alt="diagram"
+      />
+    </picture>
+  </div>
+
+  <div class="row g-4 px-3 row-cols-lg-3 row-cols-1 py-5">
+    <div class="lead col-lg-12">Terminated server is remove from the list</div>
+    <picture class="col-sm-12 col-md-10 col-lg-10 mx-auto">
+      <source
+        srcset="{% static 'img/DjangoECDeployer/terminate04.png' %}"
+        type="image/svg+xml"
+      />
+      <img
+        src="{% static 'img/DjangoECDeployer/terminate04.png' %}"
+        class="img-fluid img-thumbnail"
+        alt="diagram"
+      />
+    </picture>
+  </div>
+</section>
+
 <!-- diagram -->
 <section class="container-fluid text-center py-5">
-  <h1 class="fw-bold text-body-emphasis">AWS Diagram</h1>
+  <h1 class="fw-bold text-uppercase text-body-emphasis">AWS Diagram</h1>
   <hr class="col-3 py-3 mx-auto" />
 
   <div class="row g-4 px-3 row-cols-lg-3 row-cols-1">
