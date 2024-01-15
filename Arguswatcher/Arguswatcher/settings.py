@@ -22,6 +22,20 @@ DEBUG = env('DEBUG')
 # A list of strings representing the host/domain names that this Django site can serve.
 ALLOWED_HOSTS = ['*']       # allow any
 
+CSRF_TRUSTED_ORIGINS = [
+    "https://www.arguswatcher.net",
+    "https://arguswatcher.net"
+]
+
+CSRF_ALLOWED_ORIGINS = [
+    "https://www.arguswatcher.net",
+    "https://arguswatcher.net"
+]
+
+CORS_ORIGINS_WHITELIST = [
+    "https://www.arguswatcher.net",
+    "https://arguswatcher.net"
+]
 
 # Application definition
 
